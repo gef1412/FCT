@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.SignUpActivity"
+    android:scrollbars="vertical">
+
+    <ImageView
+        android:id="@+id/sign_applogo"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:src="@drawable/icono2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"/>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/sign_profile_image"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_below="@id/sign_applogo"
+        android:src="@drawable/profile"
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
+
+    <EditText
+        android:id="@+id/sign_nombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_profile_image"
+        android:padding="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:hint="Nombre"
+        android:inputType="text"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+    <EditText
+        android:id="@+id/sign_apellido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_nombre"
+
+        android:padding="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:hint="Apellido"
+        android:inputType="text"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/sign_Edad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_apellido"
+
+        android:padding="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:hint="Edad"
+        android:inputType="number"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/sign_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_Edad"
+
+        android:padding="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/sign_input_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_email"
+        android:padding="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="6dp"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+
+    <Button
+        android:id="@+id/sign_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sign_input_password"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+
+        android:padding="17dp"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:text="Crear cuenta"
+        android:textColor="@android:color/white"/>
+
+
+
+</RelativeLayout>
