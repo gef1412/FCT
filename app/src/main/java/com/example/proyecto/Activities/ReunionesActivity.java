@@ -6,29 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-
-
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.proyecto.Adapters.PagerAdapter;
-import com.example.proyecto.Fragments.AlumnosFragment;
-import com.example.proyecto.Fragments.AsignaturasFragment;
-import com.example.proyecto.Fragments.GruposFragment;
 import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,57 +26,36 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener { //Este activity muestra la pantalla de usuario
-
+public class ReunionesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView userName;
     private CircleImageView profileImage;
 
-
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+
+
+
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
 
     NavigationView navigationView;
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
-
-
-
-    ViewPager pager;
-    TabLayout mTabLayout;
-    TabItem tabAlumnos,tabGrupos,tabAdignaturas;
-    PagerAdapter adapter;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
+        setContentView(R.layout.activity_reuniones);
 
-        //Obtenemos el usuario cuya sesión está abierta
         mAuth = FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();
 
         toolbar= findViewById(R.id.toolbar);
-        toolbar.setTitle("Alumnos");
+        toolbar.setTitle("Reuniones");
         setSupportActionBar(toolbar);
 
-
-        pager = findViewById(R.id.viewpager);
-        mTabLayout = findViewById(R.id.tablayout);
-
-        tabAlumnos = findViewById(R.id.alumnos);
-        tabGrupos = findViewById(R.id.grupos);
-        tabAdignaturas = findViewById(R.id.asignaturas);
-
-
-
-        drawerLayout= findViewById(R.id.drawer);
-        navigationView=findViewById(R.id.nav_view);
+        drawerLayout= findViewById(R.id.drawer_reuniones);
+        navigationView=findViewById(R.id.nav_view_reuniones);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Funcionamiento del icono hamburguesa
@@ -99,75 +64,72 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
 
-        String fragmentID="";
-        int idFragment = 0;
-        try{
-            fragmentID= getIntent().getExtras().get("fragNumber").toString();
-            idFragment= Integer.parseInt(fragmentID);
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
-
-
-        adapter = new PagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,mTabLayout.getTabCount());
-        pager.setAdapter(adapter);
-
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                pager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-
-        //En caso de iniciar la aplicación desde el inicio, se ejecuta el caso 0
-        if(savedInstanceState==null){
-
-                switch (idFragment){
-
-                    case 0:
-                        toolbar.setTitle("Alumnos");
-                        pager.setCurrentItem(0);
-                        break;
-
-                    case 1:
-                        toolbar.setTitle("Grupos");
-                        pager.setCurrentItem(1);
-                        break;
-
-                    case 2:
-                        toolbar.setTitle("Asignaturas");
-                        pager.setCurrentItem(2);
-                        break;
-
-
-
-                }
-
-        }
-
 
         userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.logged_user);
         profileImage=(CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_image);
 
-
-        //Obtenemos la info del usuario
         getUsuarioInfo(user);
 
-
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        //pager.setVisibility(View.GONE);
+
+        switch (item.getItemId()) {
+
+            case R.id.alumnos:
+
+                startActivity(new Intent(this, UserActivity.class).putExtra("fragNumber",0));
+
+                break;
+
+            case R.id.grupos:
+
+                startActivity(new Intent(this, UserActivity.class).putExtra("fragNumber",1));
+
+                break;
+
+            case R.id.asignaturas:
+
+                startActivity(new Intent(this, UserActivity.class).putExtra("fragNumber",2));
+
+                break;
+
+            case R.id.reuniones:
+
+                startActivity(new Intent(this, ReunionesActivity.class));
+                break;
+
+            case R.id.ajustes:
+                startActivity(new Intent(this, PerfilActivity.class));
+                break;
+
+            case R.id.logout:
+                mAuth.signOut();
+                startActivity(new Intent(this,ActivityMain.class));
+                finish();
+                break;
+        }
+
+
+        return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_reuniones);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
 
     private void getUsuarioInfo(final FirebaseUser user) {
 
@@ -227,59 +189,4 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        drawerLayout.closeDrawer(GravityCompat.START);
-        //pager.setVisibility(View.GONE);
-
-        switch (item.getItemId()) {
-
-            case R.id.alumnos:
-                pager.setCurrentItem(0);
-
-                break;
-
-            case R.id.grupos:
-
-                pager.setCurrentItem(1);
-
-                break;
-
-            case R.id.asignaturas:
-
-                pager.setCurrentItem(2);
-
-                break;
-
-            case R.id.reuniones:
-
-                startActivity(new Intent(this, ReunionesActivity.class));
-                break;
-
-            case R.id.ajustes:
-                startActivity(new Intent(this, PerfilActivity.class));
-                break;
-
-            case R.id.logout:
-                mAuth.signOut();
-                startActivity(new Intent(this,ActivityMain.class));
-                finish();
-                break;
-        }
-
-
-        return true;
-    }
 }

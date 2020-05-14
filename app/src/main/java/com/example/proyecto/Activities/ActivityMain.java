@@ -53,6 +53,19 @@ public class ActivityMain extends AppCompatActivity {
         }
     };
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()!=null){
+            startActivity(new Intent(ActivityMain.this, UserActivity.class));
+            finish();
+        }
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,8 +114,8 @@ public class ActivityMain extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Se recogen las credenciales para loguear al usuario
-                String email= mMail.getText().toString();
-                String password= mPassword.getText().toString();
+                final String email= mMail.getText().toString();
+                final String password= mPassword.getText().toString();
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(ActivityMain.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -114,7 +127,7 @@ public class ActivityMain extends AppCompatActivity {
 
                                         Intent intent= new Intent(getApplication(), UserActivity.class);
                                         startActivity(intent);
-
+                                        saveOnPreferences(email, password);
                                         finish();
 
                                 } else {
@@ -139,8 +152,6 @@ public class ActivityMain extends AppCompatActivity {
                 saveOnPreferences(mMail.getText().toString().trim(), mPassword.getText().toString().trim());
             }
         });
-
-
 
     }
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Gestión">
+        <menu>
+            <item
+                android:id="@+id/alumnos"
+
+                android:title="Alumnos" />
+            <item
+                android:id="@+id/grupos"
+
+                android:title="Grupos" />
+            <item
+                android:id="@+id/asignaturas"
+
+                android:title="Asignaturas"/>
+
+        </menu>
+    </item>
+    <item android:title="Reuniones">
+        <menu>
+            <item
+                android:id="@+id/reuniones"
+
+                android:title="Reuniones" />
+
+        </menu>
+    </item>
+    <item android:title="Ajustes">
+        <menu>
+            <item
+                android:id="@+id/ajustes"
+
+                android:title="Modificar perfil" />
+
+        </menu>
+    </item>
+    <item android:title="Sesión">
+        <menu>
+            <item
+                android:id="@+id/logout"
+
+                android:title="Cerrar sesión" />
+
+        </menu>
+    </item>
+
+
+
+</menu>
