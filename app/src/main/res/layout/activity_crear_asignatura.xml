@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.CrearAsignaturaActivity">
+
+    <ImageView
+        android:id="@+id/add_subject_img"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icono2"/>
+
+    <EditText
+        android:id="@+id/add_subject_name"
+        android:layout_below="@id/add_subject_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"
+        android:textColor="@color/gris"
+        android:background="@drawable/et_bg"
+        android:padding="20dp"
+        android:hint="Nombre"/>
+
+    <EditText
+        android:id="@+id/add_subject_course"
+        android:layout_below="@id/add_subject_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"
+        android:textColor="@color/gris"
+        android:background="@drawable/et_bg"
+        android:padding="20dp"
+        android:hint="Curso"/>
+
+    <EditText
+        android:id="@+id/add_subject_description"
+        android:layout_below="@id/add_subject_course"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"
+        android:textColor="@color/gris"
+        android:background="@drawable/et_bg"
+        android:padding="20dp"
+        android:hint="Descripción"/>
+
+    <Button
+        android:id="@+id/add_subject_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginBottom="20dp"
+        android:padding="17dp"
+        android:text="CREAR/MODIFICAR ASIGNATURA"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:background="@drawable/listabg2"/>
+
+
+</RelativeLayout>

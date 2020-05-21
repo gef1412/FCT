@@ -3,12 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.GruposFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_groups"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="GRUPOS" />
+        android:scrollbars="vertical"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_groups_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="30dp"
+        android:src="@drawable/ic_add_black_24dp"
+        app:elevation="15dp"
+        android:clickable="true"
+        android:backgroundTint="#008FA5"
+        app:rippleColor="#1f000000"/>
 
 </FrameLayout>

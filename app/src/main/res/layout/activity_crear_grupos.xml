@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.CrearGruposActivity">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <ImageView
+            android:id="@+id/imagenLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icono2" />
+
+
+        <EditText
+            android:id="@+id/add_group_number"
+            android:layout_below="@id/imagenLogo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/et_bg"
+            android:fontFamily="sans-serif-light"
+            android:inputType="number"
+            android:hint="Número"
+            android:padding="20dp"
+            android:textColor="@color/gris"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/add_group_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/add_group_number"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="45dp"
+            android:background="@drawable/et_bg"
+            android:fontFamily="sans-serif-light"
+            android:hint="Nombre"
+            android:padding="20dp"
+            android:textColor="@color/gris"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+    <Button
+        android:id="@+id/add_group_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginBottom="20dp"
+        android:padding="17dp"
+        android:text="CREAR/MODIFICAR GRUPO"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:background="@drawable/listabg"/>
+
+</RelativeLayout>

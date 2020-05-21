@@ -5,20 +5,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -47,16 +38,17 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
-        android:layout_width="409dp"
-        android:layout_height="625dp"
-        android:layout_marginTop="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tablayout" />
 
     <FrameLayout
         android:id="@+id/container_fragment"
-        android:layout_width="409dp"
-        android:layout_height="625dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintTop_toBottomOf="@+id/tablayout" />
 
 

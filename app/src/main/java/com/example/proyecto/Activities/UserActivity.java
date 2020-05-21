@@ -61,7 +61,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
     ViewPager pager;
     TabLayout mTabLayout;
-    TabItem tabAlumnos,tabGrupos,tabAdignaturas;
+    TabItem tabAlumnos,tabGrupos,tabAsignaturas;
     PagerAdapter adapter;
 
 
@@ -70,6 +70,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
 
         //Obtenemos el usuario cuya sesión está abierta
         mAuth = FirebaseAuth.getInstance();
@@ -85,7 +86,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
         tabAlumnos = findViewById(R.id.alumnos);
         tabGrupos = findViewById(R.id.grupos);
-        tabAdignaturas = findViewById(R.id.asignaturas);
+        tabAsignaturas = findViewById(R.id.asignaturas);
 
 
 
@@ -117,6 +118,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 pager.setCurrentItem(tab.getPosition());
+                getFragmentTitle(tab.getPosition());
             }
 
             @Override
@@ -138,23 +140,19 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                 switch (idFragment){
 
                     case 0:
-                        toolbar.setTitle("Alumnos");
                         pager.setCurrentItem(0);
                         break;
 
                     case 1:
-                        toolbar.setTitle("Grupos");
                         pager.setCurrentItem(1);
                         break;
 
                     case 2:
-                        toolbar.setTitle("Asignaturas");
                         pager.setCurrentItem(2);
                         break;
-
-
-
                 }
+
+                getFragmentTitle(idFragment);
 
         }
 
@@ -166,6 +164,25 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         //Obtenemos la info del usuario
         getUsuarioInfo(user);
 
+
+    }
+
+    private void getFragmentTitle(int title) {
+
+        switch (title){
+
+            case 0:
+                toolbar.setTitle("Alumnos");
+                break;
+
+            case 1:
+                toolbar.setTitle("Grupos");
+                break;
+
+            case 2:
+                toolbar.setTitle("Asignaturas");
+                break;
+        }
 
     }
 
