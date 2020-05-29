@@ -1,6 +1,7 @@
 package com.example.proyecto.ViewHolders;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.example.proyecto.R;
 public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView txtName, txtCourse;
+    public CheckBox checkBoxSubject;
     public ImageView imgSubject;
     public ItemClickListener listener;
 
@@ -21,6 +23,7 @@ public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.O
         imgSubject=(ImageView) itemView.findViewById(R.id.subject_img_item);
         txtName=(TextView) itemView.findViewById(R.id.subject_name_item);
         txtCourse=(TextView) itemView.findViewById(R.id.subject_course_item);
+        checkBoxSubject=(CheckBox) itemView.findViewById(R.id.subject_checkbox_item);
     }
 
 

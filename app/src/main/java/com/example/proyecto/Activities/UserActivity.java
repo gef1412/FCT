@@ -77,7 +77,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         user=mAuth.getCurrentUser();
 
         toolbar= findViewById(R.id.toolbar);
-        toolbar.setTitle("Alumnos");
+        toolbar.setTitle("Usuarios");
         setSupportActionBar(toolbar);
 
 
@@ -172,7 +172,7 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         switch (title){
 
             case 0:
-                toolbar.setTitle("Alumnos");
+                toolbar.setTitle("Usuarios");
                 break;
 
             case 1:
@@ -191,13 +191,13 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         //Ruta donde buscaremos la información asociada al usuario
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+        RootRef.child("Usuarios").child("Profesor").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
                     //Accedemos a la base de datos en la ruta indicada
-                    RootRef.child("Usuarios").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
+                    RootRef.child("Usuarios").child("Profesor").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
@@ -242,6 +242,64 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+
+
+        RootRef.child("Usuarios").child("Alumno").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
+                    //Accedemos a la base de datos en la ruta indicada
+                    RootRef.child("Usuarios").child("Alumno").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
+                            Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
+                            //Se obtiene la ID del usuario actual
+                            String id = user.getUid();
+                            //Se obtienen los string que representan las IDs en la BBDD
+                            String idBBDD = datosUsuario.getID();
+                            //Si el ID del usuario actual se corresponde con alguna de las guardadas,
+                            //se obtienen los datos
+                            if (idBBDD.equals(id)) {
+
+                                String fotoBBDD = null;
+                                //Se obtiene el url de ubicación de la foto en caso de estar guardado
+                                if(snapShot.child("foto").exists()){
+                                    fotoBBDD=datosUsuario.getFoto();
+                                }
+                                //Se obtienen nombre y apellidos
+                                String nombreBBDD = datosUsuario.getNombre();
+                                String apellidosBBDD = datosUsuario.getApellido();
+
+                                //Se introducen los datos obtenidos en los elementos de la vista
+                                if(fotoBBDD!=null){
+                                    Picasso.get().load(fotoBBDD).into(profileImage);
+                                }
+                                userName.setText(nombreBBDD+" "+apellidosBBDD);
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
     }
 
     @Override

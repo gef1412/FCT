@@ -1,12 +1,15 @@
 package com.example.proyecto.Models;
 
+import java.util.List;
+
 //Esta clase servirá para obtener los datos de Firebase,
 //Es fundamental que el nombre de los nodos y los atributos de la clase sean iguales
 public class Usuarios {
 
-    private String ID, nombre, apellido, edad, email, password, foto;
+    private String ID, nombre, apellido, edad, email, password, foto, type;
+    private List<String> asignaturas;
 
-    public Usuarios(String ID, String nombre, String apellido, String edad, String email, String password, String foto) {
+    public Usuarios(String ID, String nombre, String apellido, String edad, String email, String password, String foto, String type, List<String> asignaturas) {
         this.ID = ID;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -14,6 +17,8 @@ public class Usuarios {
         this.email = email;
         this.password = password;
         this.foto = foto;
+        this.type = type;
+        this.asignaturas = asignaturas;
     }
 
     public Usuarios(){
@@ -74,5 +79,21 @@ public class Usuarios {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<String> getAsignaturas() {
+        return asignaturas;
+    }
+
+    public void setAsignaturas(List<String> asignaturas) {
+        this.asignaturas = asignaturas;
     }
 }

@@ -1,21 +1,38 @@
 package com.example.proyecto.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proyecto.Models.Asignaturas;
+import com.example.proyecto.Models.Grupos;
+import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
+import com.example.proyecto.ViewHolders.SubjectViewHolder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,13 +48,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
 
@@ -46,13 +66,27 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText inputName, inputLastname, inputAge, inputEmail, inputPassword;
     private Button signUp_btn;
     private ProgressDialog barraCarga;
-    private TextView addImageprofile;
+    private TextView addImageprofile, txtGrupo;
+
+    private Spinner userType;
+    private Spinner studentGroup;
+
+    static String tipoUsuario="";
+    static String grupoEstudiante="";
+    private String subjects;
+    static List<String> subjectList = new ArrayList<String>();
+
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
+
     Uri imageUri;
     String myUrl="";
     StorageTask uploadTask;
 
     //Para guardar info en el storage de Firebase
     StorageReference storageProfilePictureRef;
+
+    DatabaseReference gruposRef;
 
     //para crear la cuenta de usuario de Firebase
     private FirebaseAuth mAuth;
@@ -63,6 +97,10 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         //Referenciamos los elementos de la vista
+        userType= (Spinner) findViewById(R.id.tipo_usuario);
+        studentGroup= (Spinner) findViewById(R.id.grupo_alumno);
+
+        txtGrupo=(TextView) findViewById(R.id.lbl_grupo);
         inputName= (EditText) findViewById(R.id.sign_nombre);
         inputLastname= (EditText) findViewById(R.id.sign_apellido);
         inputAge= (EditText) findViewById(R.id.sign_Edad);
@@ -70,19 +108,89 @@ public class SignUpActivity extends AppCompatActivity {
         inputPassword= (EditText) findViewById(R.id.sign_input_password);
         signUp_btn= (Button) findViewById(R.id.sign_btn);
         barraCarga=new ProgressDialog(this);
+
+
+
+
+        recyclerView = findViewById(R.id.sign_recycler_subjects);
+        recyclerView.setHasFixedSize(true);
+        layoutManager=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        final DatabaseReference AsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Asignaturas");
+
+        FirebaseRecyclerOptions<Asignaturas> opciones = new FirebaseRecyclerOptions.Builder<Asignaturas>()
+                .setQuery(AsignaturasRef,Asignaturas.class)
+                .build();
+
+        FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder> adapterSubject = new FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder>(opciones) {
+            @Override
+            protected void onBindViewHolder(@NonNull SubjectViewHolder holder, final int position, @NonNull final Asignaturas model) {
+
+                //INFLAMOS LOS ELEMENTOS DE LA LISTA
+                holder.txtName.setText(model.getNombre());
+                holder.txtCourse.setText(model.getCurso());
+                holder.checkBoxSubject.setVisibility(View.VISIBLE);
+                holder.imgSubject.setVisibility(View.GONE);
+
+
+
+                List<CheckBox> items = new ArrayList<CheckBox>();
+                for(CheckBox item : items){
+                    if (holder.checkBoxSubject.isChecked()){
+                       subjects = model.getNombre();
+                       subjectList.add(subjects);
+                    }
+                }
+
+                if(model.getFoto()==null){
+                    Picasso.get().load(R.drawable.msn_logo).resize(80,80).into(holder.imgSubject);
+                }else{
+                    Picasso.get().load(model.getFoto()).resize(80,80).into(holder.imgSubject);
+                }
+
+
+            }
+
+            //ESTE MÉTODO INDICA LA VISTA UTILIZADA PARA MOSTRAR EL PRODUCTO EN LA LISTA
+            @NonNull
+            @Override
+            public SubjectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.subjects_item_layout, parent, false);
+                SubjectViewHolder holder= new SubjectViewHolder(view);
+                return holder;
+            }
+        };
+
+        recyclerView.setAdapter(adapterSubject);
+        adapterSubject.startListening();
+
+
+
+
+
+
+
+
         mAuth = FirebaseAuth.getInstance();
         storageProfilePictureRef= FirebaseStorage.getInstance().getReference().child("Fotos de perfil");
+        gruposRef=FirebaseDatabase.getInstance().getReference();
+        loadGrupos();
 
         imageProfile = (CircleImageView) findViewById(R.id.sign_profile_image);
         addImageprofile=(TextView) findViewById(R.id.sign_image_profile_btn);
 
+        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.tipos_usuario,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        userType.setAdapter(adapter);
+        userType.setOnItemSelectedListener(this);
 
 
         //Al pulsar el botón se guardan los datos de usuario y se crea la cuenta
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                crearCuenta();
+                crearCuenta(subjectList);
             }
         });
 
@@ -111,14 +219,58 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
         else{
-            Toast.makeText(this,"Error, inténtelo de nuevo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Error al obtener foto, inténtelo de nuevo", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
+    private void loadGrupos(){
+        final List<Grupos> grupos=new ArrayList<>();
+        grupos.add(new Grupos(null,null,"Ninguno"));
+
+        gruposRef.child("Grupos").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                        String ID=ds.getKey();
+                        String numero= ds.child("numero").getValue().toString();
+                        String nombre= ds.child("nombre").getValue().toString();
+                        grupos.add(new Grupos(ID,numero,nombre));
+                    }
+
+                    ArrayAdapter<Grupos> arrayAdapter=new ArrayAdapter<>(SignUpActivity.this,android.R.layout.simple_dropdown_item_1line,grupos);
+                    studentGroup.setAdapter(arrayAdapter);
+                    studentGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                            //Obtenemos el nombre del grupo seleccionado
+                            grupoEstudiante=parent.getItemAtPosition(position).toString();
+
+                            //CON ESTO OBTENDRÍAMOS EL ID. SERÍA CONVENIENTE EN CASO DE MODIFICAR LOS
+                            //DATOS DEL GRUPO
+                            //grupoEstudiante=grupos.get(position).getID();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     //En este método nos aseguramos de que los campos estén rellenos
-    private void crearCuenta(){
+    private void crearCuenta(List<String> subjectList){
         String name=inputName.getText().toString().trim();
         String lastname=inputLastname.getText().toString().trim();
         String age= inputAge.getText().toString().trim();
@@ -134,14 +286,14 @@ public class SignUpActivity extends AppCompatActivity {
             barraCarga.setMessage("Comprobando que todo está en orden, espere por favor");
             barraCarga.setCanceledOnTouchOutside(false);
             barraCarga.show();
-            guardaDatosUsuario(name,lastname,age,email,password);
+            guardaDatosUsuario(name,lastname,age,email,password, SignUpActivity.subjectList);
         }
     }
 
 
     //método empleado en guardar los datos
     private void guardaDatosUsuario(final String nombre, final String apellido, final String edad,
-                                    final String email, final String password){
+                                    final String email, final String password, final List<String> subjectList){
 
         //Creamos la referencia o ruta donde guardamos los datos
         final DatabaseReference RootRef;
@@ -167,7 +319,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         // se procede a guardar los datos en la ruta proporcionad
                                         if (task.isSuccessful()) {
                                             // Sign in success, update UI with the signed-in user's information
-                                            guardaenFirebase(nombre, apellido, edad, email, password, RootRef);
+                                            guardaenFirebase(nombre, apellido, edad, email, password, subjectList, RootRef);
                                             //Se quita la ventana emergente de proceso
                                             barraCarga.dismiss();
                                             //Mensaje emergente de éxito
@@ -237,7 +389,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     //Método empleado para guardar datos en Firebase Realtime Databasee
-    private void guardaenFirebase(String nombre, String apellido, String edad, String email, String password, DatabaseReference rootRef) {
+    private void guardaenFirebase(String nombre, String apellido, String edad, String email, String password, List<String>subjectList, DatabaseReference rootRef) {
         final String ID = mAuth.getCurrentUser().getUid();
 
         //Sirve para mapear los datos a guardar, a la izquierda el nombre del nodo,
@@ -249,6 +401,15 @@ public class SignUpActivity extends AppCompatActivity {
         userdataMap.put("edad",edad);
         userdataMap.put("email",email);
         userdataMap.put("password",password);
+        userdataMap.put("type",tipoUsuario);
+
+
+
+        if(tipoUsuario.equals("Alumno")){
+            userdataMap.put("grupo",grupoEstudiante);
+            userdataMap.put("asignaturas", subjectList);
+
+        }
 
         //Se guardan los datos de usuario dentro de la tabla/nodo "Usuarios", bajo el nodo de la ID
         rootRef.child("Usuarios").child(ID).updateChildren(userdataMap)
@@ -259,7 +420,7 @@ public class SignUpActivity extends AppCompatActivity {
                             Toast.makeText(SignUpActivity.this,"Datos en BBDD insertados",Toast.LENGTH_SHORT).show();
 
                         }else{ //En caso de error
-                            Toast.makeText(SignUpActivity.this,"Error en la inserción en la BBDD",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this,"Error en la inserción a la BBDD",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -284,9 +445,20 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        tipoUsuario=parent.getItemAtPosition(position).toString();
+        if(position==1){
+            txtGrupo.setVisibility(View.GONE);
+            studentGroup.setVisibility(View.GONE);
+        }else{
+            txtGrupo.setVisibility(View.VISIBLE);
+            studentGroup.setVisibility(View.VISIBLE);
+        }
+    }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
-
-
-
+    }
 }

@@ -21,7 +21,7 @@
             android:layout_centerHorizontal="true"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/icono" />
+            android:src="@drawable/icono2" />
 
         <RelativeLayout
             android:id="@+id/gallery1"
@@ -50,6 +50,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Tipo de usuario:"
+                        android:textAllCaps="true"
+                        android:textColor="@color/gris"
+                        android:textSize="15sp" />
+
+                    <Spinner
+                        android:id="@+id/tipo_usuario"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -159,6 +174,42 @@
                         android:paddingRight="15dp"
                         android:textColor="@color/gris"
                         android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/lbl_grupo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Grupo"
+                        android:textAllCaps="true"
+                        android:textColor="@color/gris"
+                        android:textSize="15sp" />
+
+
+                    <Spinner
+                        android:id="@+id/grupo_alumno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView
+                        android:id="@+id/lbl_asignaturas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Asignaturas"
+                        android:textAllCaps="true"
+                        android:textColor="@color/gris"
+                        android:textSize="15sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/sign_recycler_subjects"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        android:scrollbars="vertical"/>
 
                 </LinearLayout>
 

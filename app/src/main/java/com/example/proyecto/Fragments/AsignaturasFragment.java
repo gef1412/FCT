@@ -128,6 +128,7 @@ public class AsignaturasFragment extends Fragment {
                 //INFLAMOS LOS ELEMENTOS DE LA LISTA
                 holder.txtName.setText(model.getNombre());
                 holder.txtCourse.setText(model.getCurso());
+                holder.checkBoxSubject.setVisibility(View.GONE);
 
                 if(model.getFoto()==null){
                     Picasso.get().load(R.drawable.msn_logo).resize(80,80).into(holder.imgSubject);

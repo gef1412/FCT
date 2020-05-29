@@ -22,8 +22,13 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_vertical"
-
             android:src="@android:drawable/btn_star_big_on" />
+
+        <CheckBox
+            android:id="@+id/subject_checkbox_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
 
         <LinearLayout
             android:layout_width="match_parent"
