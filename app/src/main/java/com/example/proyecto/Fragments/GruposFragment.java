@@ -147,7 +147,8 @@ public class GruposFragment extends Fragment {
                                 if(i==0){
                                     grupo="";
                                     Intent intent= new Intent(getContext(), CrearGruposActivity.class);
-                                    intent.putExtra("IDgroup", model.getID());
+                                    intent.putExtra("IDgroup", model.getID())
+                                    .putExtra("number",model.getNumero());
                                     startActivity(intent);
                                 }
                                 //CON ELIMINAR, SE ACCEDE A LA UBICACIÓN DE LA LISTA DE LA COMPRA,

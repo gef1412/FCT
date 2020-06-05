@@ -1,5 +1,6 @@
 package com.example.proyecto.Fragments;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,10 +22,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.example.proyecto.Activities.SignUpActivity;
+import com.example.proyecto.Activities.BorrarUsuarioActivity;
+import com.example.proyecto.Activities.CrearUsuariosActivity;
+import com.example.proyecto.Activities.PerfilActivity;
 import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
 import com.example.proyecto.ViewHolders.UsersViewHolder;
@@ -33,11 +35,17 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +58,19 @@ public class AlumnosFragment extends Fragment {
     RecyclerView recyclerView;
 
     static String usuarios="";
-    List<String> asignaturas_list;
+
+    static String emailBBDD="";
+    static String passwordBBDD="";
+
+    static String tipoBBDD="";
+
+    static String ID="";
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+
+
+    private ProgressDialog barraCarga;
 
     public AlumnosFragment() {
         // Required empty public constructor
@@ -61,7 +81,6 @@ public class AlumnosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -121,9 +140,18 @@ public class AlumnosFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
 
-       final ArrayAdapter<String> myAsignaturas = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, asignaturas_list);
+        mAuth = FirebaseAuth.getInstance();
+        user=mAuth.getCurrentUser();
+
+       // String email= user.getEmail();
+
+        final String emailOriginal=emailBBDD;
+        final String passwordOriginal=passwordBBDD;
+
+        getUsuarioInfo(user);
+
+        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
 
         FirebaseRecyclerOptions<Usuarios> opciones = new FirebaseRecyclerOptions.Builder<Usuarios>()
                 .setQuery(usersRef.orderByChild("nombre").startAt(usuarios),Usuarios.class)
@@ -136,13 +164,7 @@ public class AlumnosFragment extends Fragment {
                 //INFLAMOS LOS ELEMENTOS DE LA LISTA
                 holder.txtName.setText(model.getNombre());
                 holder.txtType.setText(model.getType());
-                //asignaturas_list = model.getAsignaturas();
-
-                //holder.asignaturas_list.setAdapter(myAsignaturas);
-
-
                 holder.checkBoxUser.setVisibility(View.GONE);
-
 
                 if(model.getFoto()==null){
                     Picasso.get().load(R.drawable.msn_logo).resize(80,80).into(holder.imgUser);
@@ -150,67 +172,90 @@ public class AlumnosFragment extends Fragment {
                     Picasso.get().load(model.getFoto()).resize(80,80).into(holder.imgUser);
                 }
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        final CharSequence opciones[]= new CharSequence[]{
-                                "Modificar",
-                                "Eliminar"
-                        };
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Opciones:");
-                        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int i) {
-                                //CON MODIFICAR SE CARGA EL ACTIVITY DEL PRODUCTO DONDE SE MODIFICA
-                                //LA CANTIDAD DEL PRODUCTO
-                                if(i==0){
-                                    usuarios="";
-                                    Intent intent= new Intent(getContext(), SignUpActivity.class);
+
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            final CharSequence opciones[]= new CharSequence[]{
+                                    "Modificar",
+                                    "Eliminar"
+                            };
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle("Opciones:");
+                            builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int i) {
+                                    //CON MODIFICAR SE CARGA EL ACTIVITY DEL PRODUCTO DONDE SE MODIFICA
+                                    //LA CANTIDAD DEL PRODUCTO
+                                    if(i==0){
+                                        usuarios="";
+
+                                        if(model.getID().equals(user.getUid())){
+                                            startActivity(new Intent(getContext(), CrearUsuariosActivity.class)
+                                                    .putExtra("modify","true")
+                                                    .putExtra("tipo", tipoBBDD));
+                                        }else{
+
+                                            Intent intent= new Intent(getContext(), CrearUsuariosActivity.class)
+                                                    .putExtra("email",emailBBDD)
+                                                    .putExtra("password",passwordBBDD)
+                                                    .putExtra("modify","true");
+                                            startActivity(intent);
+                                            loginOtherUser(model.getEmail(),model.getPassword());
+                                        }
+
+
+                                    /*Intent intent= new Intent(getContext(), CrearUsuariosActivity.class);
                                     intent.putExtra("IDuser", model.getID());
-                                    startActivity(intent);
+                                    startActivity(intent);*/
+                                    }
+                                    //CON ELIMINAR, SE ACCEDE A LA UBICACIÓN DE LA LISTA DE LA COMPRA,
+                                    //Y AHÍ SE ELIMINA EL ARTÍCULO, ACTUALIZANDO EL FRAGMENT ACTUAL PARA
+                                    //ACTUALIZAR LA LISTA Y EL PRECIO
+                                    if(i==1){
+
+                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+                                        builder1.setTitle("Alertas");
+                                        builder1.setMessage("¿Seguro que quieres eliminar al alumno de la lista?");
+                                        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+                                        // Botones de aceptar/cancelar
+                                        builder1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                //loginOtherUser(model.getEmail(),model.getPassword());
+                                                Intent intent= new Intent(getContext(), BorrarUsuarioActivity.class)
+                                                        .putExtra("email",emailBBDD)
+                                                        .putExtra("password",passwordBBDD)
+                                                        .putExtra("email_delete",(model.getEmail()))
+                                                        .putExtra("password_delete",(model.getPassword()));
+                                                startActivity(intent);
+
+                                            }
+                                        });
+
+                                        builder1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                        builder1.show();
+                                    }
                                 }
-                                //CON ELIMINAR, SE ACCEDE A LA UBICACIÓN DE LA LISTA DE LA COMPRA,
-                                //Y AHÍ SE ELIMINA EL ARTÍCULO, ACTUALIZANDO EL FRAGMENT ACTUAL PARA
-                                //ACTUALIZAR LA LISTA Y EL PRECIO
-                                if(i==1){
+                            });
+                            builder.show();
+                        }
+                    });
 
-                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-                                    builder1.setTitle("Alertas");
-                                    builder1.setMessage("¿Seguro que quieres eliminar al alumno de la lista?");
-                                    LayoutInflater inflater = getActivity().getLayoutInflater();
 
-                                    // Botones de aceptar/cancelar
-                                    builder1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            usersRef.child(model.getID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if(task.isSuccessful()){
-                                                                Toast.makeText(getContext(),"Alumno eliminado de la lista",Toast.LENGTH_SHORT).show();
-                                                                notifyItemRemoved(position);
-                                                            }
-                                                        }
-                                                    });
-                                        }
-                                    });
 
-                                    builder1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    });
-                                    builder1.show();
-                                }
-                            }
-                        });
-                        builder.show();
-                    }
-                });
+
             }
 
             //ESTE MÉTODO INDICA LA VISTA UTILIZADA PARA MOSTRAR EL PRODUCTO EN LA LISTA
@@ -225,7 +270,6 @@ public class AlumnosFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
         adapter.startListening();
-
 
     }
 
@@ -245,22 +289,119 @@ public class AlumnosFragment extends Fragment {
         layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
+        barraCarga=new ProgressDialog(getContext());
+
+
+
 
         FloatingActionButton addAlumno_btn= view.findViewById(R.id.add_alumno_btn);
+
+
+
         addAlumno_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 usuarios="";
-                Intent intent= new Intent(getContext(), SignUpActivity.class);
-                startActivity(intent);
+
+                    Intent intent= new Intent(getContext(), CrearUsuariosActivity.class)
+                            .putExtra("email",emailBBDD)
+                            .putExtra("password",passwordBBDD)
+                            .putExtra("modify","false");
+                    startActivity(intent);
+
+
             }
         });
+
+
+
 
         return view;
 
     }
 
+    private void loginOtherUser(String email, String password){
+        barraCarga.setTitle("Cargando perfil");
+        barraCarga.setMessage("Espere por favor");
+        barraCarga.setCanceledOnTouchOutside(false);
+        barraCarga.show();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) { //Si el usuario y contraseña son correctos, se carga el UserActivity.
+                            // Sign in success, update UI with the signed-in user's information
+                            barraCarga.dismiss();
 
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            barraCarga.dismiss();
+                        }
+                    }
+                });
+    }
+
+    private void getUsuarioInfo(final FirebaseUser user) {
+
+        //Ruta donde buscaremos la información asociada al usuario
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
+                    //Accedemos a la base de datos en la ruta indicada
+                    RootRef.child("Usuarios").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
+                            Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
+                            //Se obtiene la ID del usuario actual
+                            String id = user.getUid();
+                            //Se obtienen los string que representan las IDs en la BBDD
+                            String idBBDD = datosUsuario.getID();
+                            //Si el ID del usuario actual se corresponde con alguna de las guardadas,
+                            //se obtienen los datos
+
+
+
+                            if (idBBDD.equals(id)) {
+
+
+                                //Se obtiene el url de ubicación de la foto en caso de estar guardado
+
+                                //Se obtienen nombre y apellidos
+
+                                emailBBDD = datosUsuario.getEmail();
+                                passwordBBDD = datosUsuario.getPassword();
+                                tipoBBDD=datosUsuario.getType();
+                                ID=datosUsuario.getID();
+
+
+
+
+                                //Se introducen los datos obtenidos en los elementos de la vista
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 }

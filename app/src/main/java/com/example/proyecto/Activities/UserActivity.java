@@ -19,16 +19,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proyecto.Adapters.PagerAdapter;
-import com.example.proyecto.Fragments.AlumnosFragment;
-import com.example.proyecto.Fragments.AsignaturasFragment;
-import com.example.proyecto.Fragments.GruposFragment;
+
 import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -57,7 +59,9 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
-
+    static String emailRecibido="";
+    static String passwordRecibido="";
+    static String tipoBBDD="";
 
     ViewPager pager;
     TabLayout mTabLayout;
@@ -75,6 +79,16 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         //Obtenemos el usuario cuya sesión está abierta
         mAuth = FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();
+
+
+        /*try{
+            user=mAuth.getCurrentUser();
+        }catch(NullPointerException e){
+            emailRecibido= getIntent().getStringExtra("emailLogin");
+            passwordRecibido= getIntent().getStringExtra("passwordLogin");
+            loginOtherUser(emailRecibido,passwordRecibido);
+        }*/
+
 
         toolbar= findViewById(R.id.toolbar);
         toolbar.setTitle("Usuarios");
@@ -191,20 +205,28 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         //Ruta donde buscaremos la información asociada al usuario
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Usuarios").child("Profesor").addValueEventListener(new ValueEventListener() {
+        RootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
                     //Accedemos a la base de datos en la ruta indicada
-                    RootRef.child("Usuarios").child("Profesor").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
+                    RootRef.child("Usuarios").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
                             Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
                             //Se obtiene la ID del usuario actual
+
                             String id = user.getUid();
+                            /*try{
+                                id=user.getUid();
+                            }catch (NullPointerException e){
+                                id = getIntent().getStringExtra("uid");
+                            }*/
+
                             //Se obtienen los string que representan las IDs en la BBDD
+
                             String idBBDD = datosUsuario.getID();
                             //Si el ID del usuario actual se corresponde con alguna de las guardadas,
                             //se obtienen los datos
@@ -218,6 +240,8 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                                 //Se obtienen nombre y apellidos
                                 String nombreBBDD = datosUsuario.getNombre();
                                 String apellidosBBDD = datosUsuario.getApellido();
+                                tipoBBDD= datosUsuario.getType();
+
 
                                 //Se introducen los datos obtenidos en los elementos de la vista
                                 if(fotoBBDD!=null){
@@ -242,64 +266,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
-
-
-        RootRef.child("Usuarios").child("Alumno").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
-                    //Accedemos a la base de datos en la ruta indicada
-                    RootRef.child("Usuarios").child("Alumno").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
-                            Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
-                            //Se obtiene la ID del usuario actual
-                            String id = user.getUid();
-                            //Se obtienen los string que representan las IDs en la BBDD
-                            String idBBDD = datosUsuario.getID();
-                            //Si el ID del usuario actual se corresponde con alguna de las guardadas,
-                            //se obtienen los datos
-                            if (idBBDD.equals(id)) {
-
-                                String fotoBBDD = null;
-                                //Se obtiene el url de ubicación de la foto en caso de estar guardado
-                                if(snapShot.child("foto").exists()){
-                                    fotoBBDD=datosUsuario.getFoto();
-                                }
-                                //Se obtienen nombre y apellidos
-                                String nombreBBDD = datosUsuario.getNombre();
-                                String apellidosBBDD = datosUsuario.getApellido();
-
-                                //Se introducen los datos obtenidos en los elementos de la vista
-                                if(fotoBBDD!=null){
-                                    Picasso.get().load(fotoBBDD).into(profileImage);
-                                }
-                                userName.setText(nombreBBDD+" "+apellidosBBDD);
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
     }
 
     @Override
@@ -344,7 +310,10 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.ajustes:
-                startActivity(new Intent(this, PerfilActivity.class));
+                //startActivity(new Intent(this, PerfilActivity.class));
+                startActivity(new Intent(this, CrearUsuariosActivity.class)
+                        .putExtra("modify","true")
+                        .putExtra("tipo", tipoBBDD));
                 break;
 
             case R.id.logout:
@@ -357,4 +326,25 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
+
+
+    /*private void loginOtherUser(String email, String password){
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) { //Si el usuario y contraseña son correctos, se carga el UserActivity.
+                            // Sign in success, update UI with the signed-in user's information
+
+                            Toast.makeText(UserActivity.this,"Usuario ReLogueado",Toast.LENGTH_SHORT).show();
+                            user=mAuth.getCurrentUser();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+
+                        }
+                    }
+                });
+    }*/
 }

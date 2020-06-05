@@ -233,7 +233,7 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
 
         final DatabaseReference RootRef;
         RootRef= FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Usuarios").child(userType).addListenerForSingleValueEvent(new ValueEventListener(){
+        RootRef.child("Usuarios").addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -277,32 +277,7 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
 
                 if(emailValido&&passValido){
 
-                    AuthCredential credential = EmailAuthProvider
-                            .getCredential(user.getEmail(), originalPassword); // Current Login Credentials \\
-                    // Prompt the user to re-provide their sign-in credentials
-                    user.reauthenticate(credential)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-
-                                        guardaEmail(email, RootRef);
-                                        guardaPassword(password, RootRef);
-                                        actualizaPerfil(nombre,apellido,edad,RootRef);
-                                        actualizaImagen(imageUri,RootRef);
-
-                                        mAuth.signOut();
-                                        progressDialog.dismiss();
-                                        Toast.makeText(PerfilActivity.this,"Perfil actualizado", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PerfilActivity.this, ActivityMain.class));
-
-                                    } else {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(PerfilActivity.this,"Contraseña ACTUAL incorrecta",Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }
-                            });
+                    updateUser(email,password,nombre,apellido,edad,user,originalPassword,imageUri,mAuth,RootRef,progressDialog);
 
                 }
 
@@ -316,6 +291,37 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
         emailRep=0;
     }
 
+    private void updateUser(final String email, final String password, final String nombre,
+                            final String apellido, final String edad, FirebaseUser user,
+                            String originalPassword, final Uri imageUri, final FirebaseAuth mAuth,
+                            final DatabaseReference rootRef, final ProgressDialog progressDialog) {
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(user.getEmail(), originalPassword); // Current Login Credentials \\
+        // Prompt the user to re-provide their sign-in credentials
+        user.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+
+                            guardaEmail(email, rootRef);
+                            guardaPassword(password, rootRef);
+                            actualizaPerfil(nombre,apellido,edad,rootRef);
+                            actualizaImagen(imageUri,rootRef);
+
+                            mAuth.signOut();
+                            progressDialog.dismiss();
+                            Toast.makeText(PerfilActivity.this,"Perfil actualizado", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(PerfilActivity.this, ActivityMain.class));
+
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(PerfilActivity.this,"Contraseña ACTUAL incorrecta",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+    }
 
 
     private void guardaEmail(final String email, final DatabaseReference rootRef) {
@@ -329,7 +335,7 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             userdataMap.put("email",email);
-                            rootRef.child("Usuarios").child(userType).child(ID).updateChildren(userdataMap);
+                            rootRef.child("Usuarios").child(ID).updateChildren(userdataMap);
                         }else{
                             Toast.makeText(PerfilActivity.this,"Error en la inserción de email, el email ya existe", Toast.LENGTH_SHORT).show();
                         }
@@ -345,7 +351,7 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     userdataMap.put("password",password);
-                    rootRef.child("Usuarios").child(userType).child(ID).updateChildren(userdataMap);
+                    rootRef.child("Usuarios").child(ID).updateChildren(userdataMap);
                 }else{
                     Toast.makeText(PerfilActivity.this,"Erroral modificar contraseña",Toast.LENGTH_SHORT).show();
                 }
@@ -360,7 +366,7 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
         userdataMap.put("nombre",nombre);
         userdataMap.put("apellido",apellido);
         userdataMap.put("edad",edad);
-        rootRef.child("Usuarios").child(userType).child(ID).updateChildren(userdataMap);
+        rootRef.child("Usuarios").child(ID).updateChildren(userdataMap);
     }
 
 
@@ -391,7 +397,7 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
                         user.updateProfile(profileUpdatesPhoto);
 
                         //ACTUALIZAMOS LOS DATOS CUYO NODO PRINCIPAL SEA IDÉNTICO AL ID DEL USUARIO ACTUAL
-                        rootRef.child("Usuarios").child(userType).child(user.getUid()).updateChildren(userMap);
+                        rootRef.child("Usuarios").child(user.getUid()).updateChildren(userMap);
 
                     }else{
 
@@ -457,13 +463,13 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
         //Ruta donde buscaremos la información asociada al usuario
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Usuarios").child("Profesor").addValueEventListener(new ValueEventListener() {
+        RootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
                     //Accedemos a la base de datos en la ruta indicada
-                    RootRef.child("Usuarios").child("Profesor").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
+                    RootRef.child("Usuarios").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
@@ -515,76 +521,6 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
                     });
                 }
 
-                userType="Profesor";
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
-
-        RootRef.child("Usuarios").child("Alumno").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
-                    //Accedemos a la base de datos en la ruta indicada
-                    RootRef.child("Usuarios").child("Alumno").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
-                            Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
-                            //Se obtiene la ID del usuario actual
-                            String id = user.getUid();
-                            //Se obtienen los string que representan las IDs en la BBDD
-                            String idBBDD = datosUsuario.getID();
-                            //Si el ID del usuario actual se corresponde con alguna de las guardadas,
-                            //se obtienen los datos
-                            if (idBBDD.equals(id)) {
-
-                                String fotoBBDD = null;
-                                //Se obtiene el url de ubicación de la foto en caso de estar guardado
-                                if(snapShot.child("foto").exists()){
-                                    fotoBBDD=datosUsuario.getFoto();
-                                }
-                                //Se obtienen nombre y apellidos
-                                String nombreBBDD = datosUsuario.getNombre();
-                                String apellidosBBDD = datosUsuario.getApellido();
-                                String edadBBDD= datosUsuario.getEdad();
-                                String emailBBDD= datosUsuario.getEmail();
-                                String passwordBBDD=datosUsuario.getPassword();
-
-                                //Se introducen los datos obtenidos en los elementos de la vista
-                                if(fotoBBDD!=null){
-                                    Picasso.get().load(fotoBBDD).into(profileImage);
-                                    Picasso.get().load(fotoBBDD).into(imageProfile);
-                                }
-
-                                userName.setText(nombreBBDD+" "+apellidosBBDD);
-
-                                //Rellenamos los campos con los datos actuales
-                                inputName.setText(nombreBBDD);
-                                inputLastname.setText(apellidosBBDD);
-                                inputAge.setText(edadBBDD);
-                                inputEmail.setText(emailBBDD);
-                                inputPassword.setText(passwordBBDD);
-
-
-
-                            }
-
-                            userType="Alumno";
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
             }
 
             @Override
@@ -592,9 +528,8 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
 
             }
         });
-
-
     }
+
 
 
 

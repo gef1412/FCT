@@ -3,6 +3,7 @@ package com.example.proyecto.ViewHolders;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -16,7 +17,9 @@ public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.O
     public TextView txtName, txtCourse;
     public CheckBox checkBoxSubject;
     public ImageView imgSubject;
+    public LinearLayout rowContainer;
     public ItemClickListener listener;
+
 
     public SubjectViewHolder(View itemView) {
         super(itemView);
@@ -24,6 +27,7 @@ public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.O
         txtName=(TextView) itemView.findViewById(R.id.subject_name_item);
         txtCourse=(TextView) itemView.findViewById(R.id.subject_course_item);
         checkBoxSubject=(CheckBox) itemView.findViewById(R.id.subject_checkbox_item);
+        rowContainer=(LinearLayout) itemView.findViewById(R.id.row_subj_container);
     }
 
 
@@ -34,6 +38,8 @@ public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.O
         listener.onClick(v, getAdapterPosition(), false);
 
     }
+
+
 
 
 

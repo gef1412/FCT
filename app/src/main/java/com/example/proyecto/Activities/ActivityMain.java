@@ -1,6 +1,5 @@
 package com.example.proyecto.Activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,12 +19,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
 import com.example.proyecto.Utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -54,7 +59,7 @@ public class ActivityMain extends AppCompatActivity {
     };
 
 
-    @Override
+   /* @Override
     protected void onStart() {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();
@@ -62,7 +67,7 @@ public class ActivityMain extends AppCompatActivity {
             startActivity(new Intent(ActivityMain.this, UserActivity.class));
             finish();
         }
-    }
+    }*/
 
 
 
@@ -72,7 +77,7 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Referenciamos los elementos de la vista
-        gallery1 = (RelativeLayout) findViewById(R.id.gallery1);
+        gallery1 = (RelativeLayout) findViewById(R.id.gallery1_crear);
         gallery2 = (RelativeLayout) findViewById(R.id.gallery2);
         textogoogle = (TextView) findViewById(R.id.textogoogle);
         btnlogin = (Button) findViewById(R.id.btnlogin);
@@ -124,12 +129,32 @@ public class ActivityMain extends AppCompatActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     barraCarga.dismiss();
                                     Toast.makeText(ActivityMain.this,"Bienvenido",Toast.LENGTH_SHORT).show();
+                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+                                        myRef.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                                    Usuarios logged_user = userSnapshot.getValue(Usuarios.class);
+                                                    assert logged_user != null;
+                                                    if ((logged_user.getEmail().equalsIgnoreCase(email)) && (logged_user.getType().equalsIgnoreCase("Alumno"))) {
+                                                        int tipo = 0;
+                                                        Intent intent = new Intent(getApplication(), ReunionesActivity.class);
+                                                        intent.putExtra("tipo", tipo);
+                                                        startActivity(intent);
+                                                    } else if ((logged_user.getEmail().equalsIgnoreCase(email)) && (logged_user.getType().equalsIgnoreCase("Profesor"))) {
+                                                        int tipo = 1;
+                                                        Intent intent = new Intent(getApplication(), UserActivity.class);
+                                                        intent.putExtra("tipo", tipo);
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            }
 
-                                        Intent intent= new Intent(getApplication(), UserActivity.class);
-                                        startActivity(intent);
-                                        saveOnPreferences(email, password);
-                                        finish();
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                                            }
+                                        });
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     barraCarga.dismiss();

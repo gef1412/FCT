@@ -17,7 +17,7 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/sign_profile_image"
+        android:id="@+id/sign_profile_image_crear"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_below="@id/sign_applogo"
@@ -29,10 +29,10 @@
         android:layout_marginBottom="15dp"/>
 
     <EditText
-        android:id="@+id/sign_nombre"
+        android:id="@+id/sign_nombre_crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_profile_image"
+        android:layout_below="@+id/sign_profile_image_crear"
         android:padding="20dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -43,10 +43,10 @@
         android:textSize="17sp"
         android:textStyle="bold"/>
     <EditText
-        android:id="@+id/sign_apellido"
+        android:id="@+id/sign_apellido_crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_nombre"
+        android:layout_below="@+id/sign_nombre_crear"
 
         android:padding="20dp"
         android:layout_marginTop="6dp"
@@ -60,10 +60,10 @@
         android:textStyle="bold"/>
 
     <EditText
-        android:id="@+id/sign_Edad"
+        android:id="@+id/sign_Edad_crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_apellido"
+        android:layout_below="@+id/sign_apellido_crear"
 
         android:padding="20dp"
         android:layout_marginTop="6dp"
@@ -77,10 +77,10 @@
         android:textStyle="bold"/>
 
     <EditText
-        android:id="@+id/sign_email"
+        android:id="@+id/sign_email_crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_Edad"
+        android:layout_below="@+id/sign_Edad_crear"
 
         android:padding="20dp"
         android:layout_marginTop="6dp"
@@ -94,10 +94,10 @@
         android:textStyle="bold"/>
 
     <EditText
-        android:id="@+id/sign_input_password"
+        android:id="@+id/sign_input_password_crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_email"
+        android:layout_below="@+id/sign_email_crear"
         android:padding="20dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -111,10 +111,10 @@
 
 
     <Button
-        android:id="@+id/sign_btn"
+        android:id="@+id/sign_btn_crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sign_input_password"
+        android:layout_below="@id/sign_input_password_crear"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"

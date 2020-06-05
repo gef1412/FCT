@@ -15,7 +15,7 @@
         android:layout_marginRight="40dp">
 
         <ImageView
-            android:id="@+id/ImagenLogo"
+            android:id="@+id/ImagenLogo_crear"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
@@ -24,10 +24,10 @@
             android:src="@drawable/icono2" />
 
         <RelativeLayout
-            android:id="@+id/gallery1"
+            android:id="@+id/gallery1_crear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ImagenLogo">
+            android:layout_below="@id/ImagenLogo_crear">
 
             <TextView
                 android:id="@+id/tv_recu"
@@ -103,7 +103,7 @@
             android:paddingRight="50dp"
             android:text="Send Mail"
             android:textAllCaps="true"
-            android:layout_below="@id/gallery1"
+            android:layout_below="@id/gallery1_crear"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

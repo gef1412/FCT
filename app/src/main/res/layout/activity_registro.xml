@@ -15,7 +15,7 @@
         android:layout_marginRight="40dp">
 
         <ImageView
-            android:id="@+id/ImagenLogo"
+            android:id="@+id/imagenlogo"
             android:layout_width="60dp"
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
@@ -27,7 +27,7 @@
             android:id="@+id/gallery1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ImagenLogo">
+            android:layout_below="@id/imagenlogo">
 
             <TextView
                 android:id="@+id/tv_login"
@@ -50,7 +50,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <TextView
+
+
+                    <!--<TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -64,7 +66,7 @@
                         android:id="@+id/tipo_usuario"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"/>
+                        android:layout_marginTop="5dp"/> -->
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -175,7 +177,7 @@
                         android:textColor="@color/gris"
                         android:textSize="12sp" />
 
-                    <TextView
+                    <!--<TextView
                         android:id="@+id/lbl_grupo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -209,7 +211,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="400dp"
-                        android:scrollbars="vertical"/>
+                        android:scrollbars="vertical"/>-->
 
                 </LinearLayout>
 

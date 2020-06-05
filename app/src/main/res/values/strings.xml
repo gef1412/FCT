@@ -7,6 +7,7 @@
     <string name="close">close</string>
 
     <string-array name="tipos_usuario">
+        <item>--</item>
         <item>Alumno</item>
         <item>Profesor</item>
     </string-array>

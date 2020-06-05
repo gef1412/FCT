@@ -1,38 +1,22 @@
 package com.example.proyecto.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.proyecto.Models.Asignaturas;
-import com.example.proyecto.Models.Grupos;
-import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
-import com.example.proyecto.ViewHolders.SubjectViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,18 +32,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SignUpActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
+public class SignUpActivity extends AppCompatActivity{ //implements AdapterView.OnItemSelectedListener
 
     //Creamos los elementos que vamos a necesitar para recoger los datos de registro
     private CircleImageView imageProfile;
@@ -68,13 +49,14 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
     private ProgressDialog barraCarga;
     private TextView addImageprofile, txtGrupo;
 
-    private Spinner userType;
-    private Spinner studentGroup;
+    //private Spinner userType;
+    //private Spinner studentGroup;
 
-    static String tipoUsuario="";
-    static String grupoEstudiante="";
-    private String subjects;
-    static List<String> subjectList = new ArrayList<String>();
+    //static String tipoUsuario="";
+    //static String grupoEstudiante="";
+    //private String subjects;
+    //static List<String> subjectList = new ArrayList<String>();;
+
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -97,10 +79,10 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_registro);
 
         //Referenciamos los elementos de la vista
-        userType= (Spinner) findViewById(R.id.tipo_usuario);
-        studentGroup= (Spinner) findViewById(R.id.grupo_alumno);
+        /*userType= (Spinner) findViewById(R.id.tipo_usuario);
+        studentGroup= (Spinner) findViewById(R.id.grupo_alumno);*/
 
-        txtGrupo=(TextView) findViewById(R.id.lbl_grupo);
+        //txtGrupo=(TextView) findViewById(R.id.lbl_grupo);
         inputName= (EditText) findViewById(R.id.sign_nombre);
         inputLastname= (EditText) findViewById(R.id.sign_apellido);
         inputAge= (EditText) findViewById(R.id.sign_Edad);
@@ -112,20 +94,20 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
 
 
 
-        recyclerView = findViewById(R.id.sign_recycler_subjects);
+        /*recyclerView = findViewById(R.id.sign_recycler_subjects);
         recyclerView.setHasFixedSize(true);
         layoutManager=new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);*/
 
-        final DatabaseReference AsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Asignaturas");
+        /*final DatabaseReference AsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Asignaturas");
 
         FirebaseRecyclerOptions<Asignaturas> opciones = new FirebaseRecyclerOptions.Builder<Asignaturas>()
                 .setQuery(AsignaturasRef,Asignaturas.class)
                 .build();
 
-        FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder> adapterSubject = new FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder>(opciones) {
+        final FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder> adapterSubject = new FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder>(opciones) {
             @Override
-            protected void onBindViewHolder(@NonNull SubjectViewHolder holder, final int position, @NonNull final Asignaturas model) {
+            protected void onBindViewHolder(@NonNull final SubjectViewHolder holder, final int position, @NonNull final Asignaturas model) {
 
                 //INFLAMOS LOS ELEMENTOS DE LA LISTA
                 holder.txtName.setText(model.getNombre());
@@ -134,14 +116,45 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
                 holder.imgSubject.setVisibility(View.GONE);
 
 
-
                 List<CheckBox> items = new ArrayList<CheckBox>();
-                for(CheckBox item : items){
-                    if (holder.checkBoxSubject.isChecked()){
-                       subjects = model.getNombre();
-                       subjectList.add(subjects);
-                    }
+
+                items.add(holder.checkBoxSubject);
+
+                for(final CheckBox item : items){
+                    item.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            int pos = holder.getAdapterPosition();
+
+                            if(item.isChecked()){
+                                subjects = model.getNombre();
+                                subjectList.add(subjects);
+                            }else{
+                                subjectList.remove(subjects);
+                            }
+
+                        }
+                    });
                 }
+
+
+
+                *//*holder.checkBoxSubject.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int pos = holder.getAdapterPosition();
+
+                        if(holder.checkBoxSubject.isChecked()){
+                            subjects = model.getNombre();
+                            subjectList.add(subjects);
+                        }else{
+                            subjectList.remove(subjects);
+                        }
+
+                    }
+                });*//*
+
+
 
                 if(model.getFoto()==null){
                     Picasso.get().load(R.drawable.msn_logo).resize(80,80).into(holder.imgSubject);
@@ -163,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
         };
 
         recyclerView.setAdapter(adapterSubject);
-        adapterSubject.startListening();
+        adapterSubject.startListening();*/
 
 
 
@@ -175,22 +188,22 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
         mAuth = FirebaseAuth.getInstance();
         storageProfilePictureRef= FirebaseStorage.getInstance().getReference().child("Fotos de perfil");
         gruposRef=FirebaseDatabase.getInstance().getReference();
-        loadGrupos();
+        //loadGrupos();
 
         imageProfile = (CircleImageView) findViewById(R.id.sign_profile_image);
         addImageprofile=(TextView) findViewById(R.id.sign_image_profile_btn);
 
-        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.tipos_usuario,android.R.layout.simple_spinner_item);
+        /*ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.tipos_usuario,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userType.setAdapter(adapter);
-        userType.setOnItemSelectedListener(this);
+        userType.setOnItemSelectedListener(this);*/
 
 
         //Al pulsar el botón se guardan los datos de usuario y se crea la cuenta
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                crearCuenta(subjectList);
+                crearCuenta();
             }
         });
 
@@ -225,7 +238,7 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
 
-    private void loadGrupos(){
+    /*private void loadGrupos(){
         final List<Grupos> grupos=new ArrayList<>();
         grupos.add(new Grupos(null,null,"Ninguno"));
 
@@ -267,10 +280,10 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
 
             }
         });
-    }
+    }*/
 
     //En este método nos aseguramos de que los campos estén rellenos
-    private void crearCuenta(List<String> subjectList){
+    private void crearCuenta(){
         String name=inputName.getText().toString().trim();
         String lastname=inputLastname.getText().toString().trim();
         String age= inputAge.getText().toString().trim();
@@ -286,14 +299,14 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
             barraCarga.setMessage("Comprobando que todo está en orden, espere por favor");
             barraCarga.setCanceledOnTouchOutside(false);
             barraCarga.show();
-            guardaDatosUsuario(name,lastname,age,email,password, SignUpActivity.subjectList);
+            guardaDatosUsuario(name,lastname,age,email,password);
         }
     }
 
 
     //método empleado en guardar los datos
     private void guardaDatosUsuario(final String nombre, final String apellido, final String edad,
-                                    final String email, final String password, final List<String> subjectList){
+                                    final String email, final String password){
 
         //Creamos la referencia o ruta donde guardamos los datos
         final DatabaseReference RootRef;
@@ -319,16 +332,21 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
                                         // se procede a guardar los datos en la ruta proporcionad
                                         if (task.isSuccessful()) {
                                             // Sign in success, update UI with the signed-in user's information
-                                            guardaenFirebase(nombre, apellido, edad, email, password, subjectList, RootRef);
+
+                                            guardaenFirebase(nombre, apellido, edad, email, password, RootRef);
                                             //Se quita la ventana emergente de proceso
                                             barraCarga.dismiss();
                                             //Mensaje emergente de éxito
                                             Toast.makeText(SignUpActivity.this,"Cuenta creada con éxito",Toast.LENGTH_SHORT).show();
                                             //Volvemos a la página principal
+
+                                            mAuth.signOut();
                                             Intent intent= new Intent(SignUpActivity.this, ActivityMain.class);
+                                            //subjectList.clear();
                                             startActivity(intent);
                                         } else {
                                             // En caso de fallo, se muestra un mensaje emergente de error
+
                                             barraCarga.dismiss();
                                             Toast.makeText(SignUpActivity.this,"Error, inténtelo de nuevo",Toast.LENGTH_SHORT).show();
                                         }
@@ -349,12 +367,14 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
 
 
 
-    private void actualizaImagen(final Uri imageUri, final DatabaseReference rootRef) {
+
+
+    private void actualizaImagen(final Uri imageUri, final String ID, final DatabaseReference rootRef) {
 
         final FirebaseUser user= mAuth.getCurrentUser();
         if(imageUri!=null){
             //Ruta donde se guarda la foto de usuario en Firebase Storage
-            final StorageReference fileref=storageProfilePictureRef.child(user.getUid()+".jpg");
+            final StorageReference fileref=storageProfilePictureRef.child(ID+".jpg");
             uploadTask=fileref.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation() {
                 @Override
@@ -378,7 +398,7 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
                         UserProfileChangeRequest profileUpdatesPhoto = new UserProfileChangeRequest.Builder().setPhotoUri(imageUri).build();
                         user.updateProfile(profileUpdatesPhoto);
                         //ACTUALIZAMOS LOS DATOS CUYO NODO PRINCIPAL SEA IDÉNTICO AL ID DEL USUARIO ACTUAL
-                        rootRef.child("Usuarios").child(user.getUid()).updateChildren(userMap);
+                        rootRef.child("Usuarios").child(ID).updateChildren(userMap);
 
                     }else{
                         Toast.makeText(SignUpActivity.this,"Error al actualizar perfil", Toast.LENGTH_SHORT).show();
@@ -389,8 +409,8 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     //Método empleado para guardar datos en Firebase Realtime Databasee
-    private void guardaenFirebase(String nombre, String apellido, String edad, String email, String password, List<String>subjectList, DatabaseReference rootRef) {
-        final String ID = mAuth.getCurrentUser().getUid();
+    private void guardaenFirebase(String nombre, String apellido, String edad, String email, String password, DatabaseReference rootRef) {
+        final String ID = mAuth.getUid();
 
         //Sirve para mapear los datos a guardar, a la izquierda el nombre del nodo,
         //a la derecha el valor quese guarda en dicho nodo
@@ -401,15 +421,13 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
         userdataMap.put("edad",edad);
         userdataMap.put("email",email);
         userdataMap.put("password",password);
-        userdataMap.put("type",tipoUsuario);
+        userdataMap.put("type","Alumno");
+        //userdataMap.put("asignaturas", subjectList);
 
 
-
-        if(tipoUsuario.equals("Alumno")){
+        /*if(tipoUsuario.equals("Alumno")){
             userdataMap.put("grupo",grupoEstudiante);
-            userdataMap.put("asignaturas", subjectList);
-
-        }
+        }*/
 
         //Se guardan los datos de usuario dentro de la tabla/nodo "Usuarios", bajo el nodo de la ID
         rootRef.child("Usuarios").child(ID).updateChildren(userdataMap)
@@ -420,7 +438,7 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
                             Toast.makeText(SignUpActivity.this,"Datos en BBDD insertados",Toast.LENGTH_SHORT).show();
 
                         }else{ //En caso de error
-                            Toast.makeText(SignUpActivity.this,"Error en la inserción a la BBDD",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this,"Error en la inserción en la BBDD",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -434,18 +452,18 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
 
         //Este try controla la excepción en caso de que no haya foto seleccionada y el Uri sea null
         try{
-            actualizaImagen(imageUri,RootRef);
+            actualizaImagen(imageUri, ID, RootRef);
         }catch (NullPointerException e){
             e.printStackTrace();
         }
 
         //Se cierra la sesión de autenticación, de lo contrario se podría quedar abierta con el usuario
         //recién creado
-        mAuth.signOut();
+
     }
 
 
-    @Override
+    /*@Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         tipoUsuario=parent.getItemAtPosition(position).toString();
         if(position==1){
@@ -460,5 +478,5 @@ public class SignUpActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
+    }*/
 }

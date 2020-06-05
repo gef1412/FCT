@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme_NoActionBar"
         tools:replace="android:theme">
-        <activity android:name=".Activities.CrearGruposActivity"></activity>
+        <activity android:name=".Activities.BorrarUsuarioActivity"></activity>
+        <activity android:name=".Activities.CrearUsuariosActivity" />
+        <activity android:name=".Activities.CrearGruposActivity" />
         <activity android:name=".Activities.CrearAsignaturaActivity" />
         <activity android:name=".Activities.PerfilActivity" />
         <activity android:name=".Activities.ReunionesActivity" />

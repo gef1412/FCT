@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/ImagenLogo"
+            android:id="@+id/ImagenLogo_crear"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/icono2"
@@ -27,7 +27,7 @@
             android:id="@+id/textogoogle"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ImagenLogo"
+            android:layout_below="@id/ImagenLogo_crear"
             android:layout_marginTop="100dp"
             android:fontFamily="sans-serif-medium"
             android:text="Google"
@@ -35,14 +35,14 @@
             android:textSize="30sp" />
 
         <RelativeLayout
-            android:id="@+id/gallery1"
-            android:layout_below="@id/ImagenLogo"
+            android:id="@+id/gallery1_crear"
+            android:layout_below="@id/ImagenLogo_crear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/tv_login"
+                android:id="@+id/tv_login_crear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Login"
@@ -51,10 +51,10 @@
                 android:fontFamily="sans-serif-medium" />
 
             <LinearLayout
-                android:layout_below="@id/tv_login"
+                android:layout_below="@id/tv_login_crear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/linelay1"
+                android:id="@+id/linelay1_crear"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -65,7 +65,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mail"
+                        android:text="Email"
                         android:inputType="textEmailAddress"
                         android:textAllCaps="true"
                         android:fontFamily="sans-serif-light"
@@ -145,7 +145,7 @@
                 android:textSize="16sp"
                 android:textAllCaps="true"
                 android:textColor="@color/gris"
-                android:layout_below="@id/linelay1"/>
+                android:layout_below="@id/linelay1_crear"/>
 
         </RelativeLayout>
 

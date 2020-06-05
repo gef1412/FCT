@@ -26,7 +26,7 @@
                 android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icono" />
+                android:src="@drawable/icono2" />
 
             <RelativeLayout
                 android:id="@+id/modify_gallery1"
@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Sign Up"
+                    android:text="Modificar perfil"
                     android:textColor="@color/gris"
                     android:textSize="30sp" />
 
@@ -182,7 +182,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Cambiar foto de perfil"
-                        android:layout_below="@id/sign_profile_image"
+                        android:layout_below="@id/sign_profile_image_crear"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"/>

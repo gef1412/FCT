@@ -32,6 +32,9 @@ public class CrearGruposActivity extends AppCompatActivity {
     private String ID;
     String IDexistente="";
 
+    static int numnberRepetido=0;
+    static String currentNumber="";
+
     private DatabaseReference GroupsRef;
 
     private ProgressDialog barraCarga;
@@ -49,6 +52,8 @@ public class CrearGruposActivity extends AppCompatActivity {
         }catch (NullPointerException e){
             e.printStackTrace();
         }
+
+        currentNumber=getIntent().getStringExtra("number");
 
         GroupsRef= FirebaseDatabase.getInstance().getReference().child("Grupos");
         inputGroupNumber=(EditText)findViewById(R.id.add_group_number);
@@ -139,35 +144,76 @@ public class CrearGruposActivity extends AppCompatActivity {
 
     }
 
-    private void saveInfoGroupinBBDD(String groupNumber, String groupName) {
-        if(IDexistente!=null){
-            ID=IDexistente;
-        }else{
-            ID = GroupsRef.push().getKey();
-        }
+    private void saveInfoGroupinBBDD(final String groupNumber, final String groupName) {
 
+        GroupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-        HashMap<String,Object> subjectMap= new HashMap<>();
-        subjectMap.put("ID",ID);
-        subjectMap.put("numero",groupNumber);
-        subjectMap.put("nombre",groupName);
+                //SE COMPRUEBA EL NICK DE USUARIOS GUARDADOS EN BBDD PARA COMPROBAR SI EXISTE
+                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
 
+                    Grupos datosGrupo = snapShot.getValue(Grupos.class);
+                    String numberBBDD = datosGrupo.getNumero();
 
-        GroupsRef.child(ID).updateChildren(subjectMap)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            barraCarga.dismiss();
-                            Toast.makeText(CrearGruposActivity.this,"Grupos actualizadas en la base de datos",Toast.LENGTH_SHORT).show();
-                            Intent intent=new Intent(CrearGruposActivity.this,UserActivity.class).putExtra("fragNumber",1);
-                            startActivity(intent);
-                        }else{
-                            barraCarga.dismiss();
-                            String mensaje= task.getException().toString();
-                            Toast.makeText(CrearGruposActivity.this,"Error: "+ mensaje,Toast.LENGTH_SHORT).show();
-                        }
+                    if(groupNumber.equals(numberBBDD)){
+
+                        numnberRepetido++;
+                        barraCarga.dismiss();
+
                     }
-                });
+
+                }
+
+                if(numnberRepetido==0||groupNumber.equals(currentNumber)){
+
+                    if(IDexistente!=null){
+                        ID=IDexistente;
+                    }else{
+                        ID = GroupsRef.push().getKey();
+                    }
+
+
+                    HashMap<String,Object> subjectMap= new HashMap<>();
+                    subjectMap.put("ID",ID);
+                    subjectMap.put("numero",groupNumber);
+                    subjectMap.put("nombre",groupName);
+
+
+                    GroupsRef.child(ID).updateChildren(subjectMap)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        barraCarga.dismiss();
+                                        Toast.makeText(CrearGruposActivity.this,"Grupos actualizadas en la base de datos",Toast.LENGTH_SHORT).show();
+                                        Intent intent=new Intent(CrearGruposActivity.this,UserActivity.class).putExtra("fragNumber",1);
+                                        startActivity(intent);
+                                    }else{
+                                        barraCarga.dismiss();
+                                        String mensaje= task.getException().toString();
+                                        Toast.makeText(CrearGruposActivity.this,"Error: "+ mensaje,Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                }else{
+                    Toast.makeText(CrearGruposActivity.this,"El número ya existe",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+        numnberRepetido=0;
+
     }
+
+
+
 }
