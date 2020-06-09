@@ -2,7 +2,6 @@ package com.example.proyecto.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -11,19 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -65,19 +58,19 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
 
     private String fechaActual, horaActual;
 
-    static boolean reunionAsig = false;
 
-    private String grupoUsuario = "";
-    private String tipoUsuario = "";
-    private String nombreAsignatura = "";
+
+    private static String grupoUsuario = "";
+    static String emailBBDD="";
+    static String passwordBBDD="";
     static String tipoBBDD="";
+
 
 
     private RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    static List<String> subjectUser = new ArrayList<>();
-    static List<Asignaturas> listaAsig = new ArrayList<>();
-    //static boolean visible=true;
+
+
 
     DatabaseReference reunionesRef;
 
@@ -93,8 +86,7 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reuniones);
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Reuniones");
@@ -114,19 +106,33 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
 
         userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.logged_user);
         profileImage = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_image);
-
         recyclerView = (RecyclerView) findViewById(R.id.recycler_subjects_reuniones);
 
-        getUsuarioInfo(user);
+
+
+
 
         Intent intent = getIntent();
         final int tipo = intent.getIntExtra("tipo", 1);
         if (tipo == 0) {
             hide_item();
+
         }
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        getUsuarioInfo(user);
 
         DatabaseReference AsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(user.getUid()).child("asignaturas");
         //final DatabaseReference userAsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
@@ -138,13 +144,24 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
 
 
         final FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder> adapterSubject = new FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder>(opciones) {
-            boolean pulsado = false;
-            boolean grupoExistente = false;
+
+
 
             @Override
             protected void onBindViewHolder(@NonNull final SubjectViewHolder holder, final int position, @NonNull final Asignaturas model) {
 
                 //INFLAMOS LOS ELEMENTOS DE LA LISTA
+
+
+
+
+                /*if(encontrado.equals("true")){
+                    //holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
+
+
+                }*/
+
+                final boolean[] pulsado = {true};
 
 
                 holder.txtName.setText(model.getNombre());
@@ -159,83 +176,25 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                 }
 
 
-
-
-                /*if (reunionAsig){
-                    holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
-                    pulsado = false;
-
+                if(tipoBBDD.equals("Alumno")){
+                    pulsado[0]= findReuniones(model.getNombre(),holder,position);
                 }else{
-                    pulsado = true;
-                }*/
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("ResourceAsColor")
-                    @Override
-                    public void onClick(View v) {
-                        final DatabaseReference myReunionesRef = FirebaseDatabase.getInstance().getReference("Reuniones");
-                        myReunionesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if ((dataSnapshot.exists()) && (!pulsado)){
-                                   /*if (Objects.equals(dataSnapshot.getKey(), grupoUsuario)){
-                                       AlertDialog.Builder myBuilder = new AlertDialog.Builder(ReunionesActivity.this);
-                                       myBuilder.setTitle("Reunion Existente");
-                                       myBuilder.setMessage("Esta reunion ya ha sido solicitada por otro miembro del grupo, desea cancelarla?");
-                                       myBuilder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                           @Override
-                                           public void onClick(DialogInterface dialog, int which) {
-                                               borrarReunion(model.getNombre());
-                                               pulsado = false;
-                                           }
-                                       });
-                                       myBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                           @Override
-                                           public void onClick(DialogInterface dialog, int which) {
-                                               dialog.cancel();
-                                           }
-                                       });
-                                   }*/
-                                    nombreAsignatura = model.getNombre();
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                                    if(tipo==0){
-                                        holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
-                                        guardarReuniones(nombreAsignatura);
-                                    }else{
-                                        Toast.makeText(ReunionesActivity.this, "Los profesores no pueden solicitar reuniones", Toast.LENGTH_SHORT).show();
-                                    }
+                            startActivity(new Intent(ReunionesActivity.this,ConsultaReunionesActivity.class)
+                                    .putExtra("asignatura",model.getNombre()));
+
+                        }
+                    });
+
+                }
 
 
-                                    pulsado = true;
 
 
-                                }else if ((dataSnapshot.exists()) && (pulsado)) {
-                                    holder.rowContainer.setBackgroundColor(Color.parseColor("#55AEBB"));
-
-                                        borrarReunion(model.getNombre());
-
-
-                                    pulsado = false;
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                        /* if (pulsado) {
-                            nombreAsignatura = model.getNombre();
-                            holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
-                            guardarReuniones(nombreAsignatura);
-                            pulsado = false;
-                        } else {
-                            holder.rowContainer.setBackgroundColor(Color.parseColor("#55AEBB"));
-                            pulsado = true;
-                        }*/
-                    }
-
-                });
 
             }
 
@@ -252,7 +211,67 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
 
         recyclerView.setAdapter(adapterSubject);
         adapterSubject.startListening();
+    }
 
+    private boolean findReuniones(final String nombre, final SubjectViewHolder holder, final int position) {
+
+        final boolean [] pulsado={true};
+
+        reunionesRef = FirebaseDatabase.getInstance().getReference()
+                .child("Reuniones");
+
+        reunionesRef.child(nombre).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
+
+                    Reuniones datosReuniones = snapShot.getValue(Reuniones.class);
+
+                    String grupoReunion=datosReuniones.getGrupo();
+
+                    if(grupoReunion.equals(grupoUsuario)){
+                        Toast.makeText(ReunionesActivity.this, "La reunion ya existe ", Toast.LENGTH_SHORT).show();
+                        //encontrado="true";
+                        holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
+                        pulsado[0]=false;
+                        if (snapShot.child("estado").exists()){
+                            holder.check.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                if(pulsado[0]){
+                    //nombreAsignatura=model.getNombre();
+                    holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
+                    guardarReuniones(nombre);
+                    pulsado[0] =false;
+                }else{
+                    holder.rowContainer.setBackgroundColor(Color.parseColor("#55AEBB"));
+                    borrarReunion(nombre);
+                    pulsado[0] =true;
+                }
+            }
+
+        });
+
+        return pulsado[0];
 
     }
 
@@ -268,7 +287,7 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         drawerLayout.closeDrawer(GravityCompat.START);
-        item.setVisible(false);
+        //item.setVisible(false);
         //pager.setVisibility(View.GONE);
 
         switch (item.getItemId()) {
@@ -293,12 +312,32 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
 
             case R.id.reuniones:
 
-                startActivity(new Intent(this, ReunionesActivity.class));
+                int tipo;
+                if(tipoBBDD.equals("Alumno")){
+                    tipo=0;
+                }else{
+                    tipo=1;
+                }
+
+                startActivity(new Intent(this, ReunionesActivity.class).putExtra("tipo",tipo));
                 break;
 
             case R.id.ajustes:
-                startActivity(new Intent(this, CrearUsuariosActivity.class)
-                        .putExtra("modify", "true").putExtra("tipo", tipoBBDD));
+
+
+                Intent intent= new Intent(this, CrearUsuariosActivity.class);
+
+                String modificado= "true";
+                Bundle info = new Bundle();
+                info.putString("ID",user.getUid());
+                info.putString("tipo", tipoBBDD);
+                info.putString("email",emailBBDD);
+                info.putString("password",passwordBBDD);
+                info.putString("tipoActual", tipoBBDD);
+                info.putString("modify",modificado);
+
+                intent.putExtras(info);
+                startActivity(intent);
                 break;
 
             case R.id.logout:
@@ -307,7 +346,6 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                 finish();
                 break;
         }
-
 
         return true;
     }
@@ -324,7 +362,6 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void guardarReuniones(final String subjectName) {
-
 
         reunionesRef = FirebaseDatabase.getInstance().getReference()
                 .child("Reuniones");
@@ -366,7 +403,6 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                     }
                 });
 
-
     }
 
     private void getUsuarioInfo(final FirebaseUser user) {
@@ -384,7 +420,7 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                     //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
                     Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
 
-                    tipoUsuario = datosUsuario.getType();
+                    //tipoUsuario = datosUsuario.getType();
                     //Se obtiene la ID del usuario actual
                     String id = user.getUid();
                     //Se obtienen los string que representan las IDs en la BBDD
@@ -399,13 +435,11 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                             fotoBBDD = datosUsuario.getFoto();
                         }
 
+
+                        emailBBDD=datosUsuario.getEmail();
+                        passwordBBDD=datosUsuario.getPassword();
+
                         tipoBBDD = datosUsuario.getType();
-
-
-                                /*if(snapShot.child("asignaturas").exists()){
-                                    subjectUser=datosUsuario.getAsignaturas();
-                                }*/
-
 
                         //Se obtienen nombre y apellidos
                         String nombreBBDD = datosUsuario.getNombre();
@@ -450,43 +484,5 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                 });
 
     }
-
-    public void reunionPedida(String subjectName) {
-        reunionesRef = FirebaseDatabase.getInstance().getReference("Reuniones").child(subjectName);
-        reunionesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
-                    for (final DataSnapshot snapShotSubject : snapShot.getChildren()) {
-                        for (final DataSnapshot snapShotReunion : snapShotSubject.getChildren()) {
-                            Reuniones datosReuniones = snapShotReunion.getValue(Reuniones.class);
-                            String grupoBBDD = datosReuniones.getGrupo();
-                            if (grupoUsuario.equalsIgnoreCase(grupoBBDD)) {
-                                Toast.makeText(ReunionesActivity.this, "Ya hay reunión solicitada", Toast.LENGTH_SHORT).show();
-                                reunionAsig = true;
-                                break;
-                            }
-                        }
-                    }
-
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-//        if (reunionAsignada[0]){
-//            return reunionPedida();
-//        }else{
-//            return false;
-//        }
-    }
-
 
 }

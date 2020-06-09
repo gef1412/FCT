@@ -8,8 +8,8 @@ android:animateLayoutChanges="true"
 tools:context=".Activities.CrearUsuariosActivity">
 
 <RelativeLayout
-    android:layout_width="333dp"
-    android:layout_height="675dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_centerInParent="true"
     android:layout_marginLeft="40dp"
     android:layout_marginRight="40dp">
@@ -113,6 +113,7 @@ tools:context=".Activities.CrearUsuariosActivity">
                     android:textColor="@color/gris"
                     android:textSize="12sp" />
                 <TextView
+                    android:id="@+id/lbl_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -135,6 +136,7 @@ tools:context=".Activities.CrearUsuariosActivity">
                     android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/lbl_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"

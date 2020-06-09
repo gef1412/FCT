@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
@@ -9,27 +11,23 @@
     android:layout_marginEnd="15dp"
     app:cardElevation="15dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/row_subj_container"
+    <LinearLayout
+        android:id="@+id/row_meet_container"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="horizontal"
         android:background="@drawable/listabg2">
 
-        <ImageView
-            android:id="@+id/subject_img_item"
-            android:layout_width="80dp"
+        <TextView
+            android:id="@+id/meeting_name_item"
+            android:layout_width="132dp"
             android:layout_height="80dp"
-            android:layout_gravity="center_vertical"
-            android:src="@android:drawable/btn_star_big_on" />
+            android:gravity="center"
+            android:text="ABC"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
 
-        <CheckBox
-            android:id="@+id/subject_checkbox_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,28 +35,28 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/subject_name_item"
+                android:id="@+id/meeting_subj_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
                 android:text="Asignatura"
                 android:textColor="@color/white"
-                android:textSize="20dp"
-                />
+                android:textSize="20dp" />
 
             <TextView
-                android:id="@+id/subject_course_item"
+                android:id="@+id/meeting_course_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Curso"
+                android:layout_marginTop="15dp"
+                android:text="Fecha/Hora"
                 android:textColor="@color/white"
-                android:textSize="12dp"/>
+                android:textSize="12dp" />
+
 
             <ImageView
-                android:id="@+id/confirmado2"
+                android:id="@+id/confirmado"
                 android:layout_width="30dp"
                 android:background="@drawable/confirmado3"
                 android:layout_height="30dp"
@@ -66,6 +64,7 @@
                 android:layout_marginTop="-25dp"
                 android:layout_marginRight="8dp"
                 android:visibility="invisible"/>
+
 
 
         </LinearLayout>

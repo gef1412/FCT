@@ -19,6 +19,7 @@ public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.O
     public ImageView imgSubject;
     public LinearLayout rowContainer;
     public ItemClickListener listener;
+    public ImageView check;
 
 
     public SubjectViewHolder(View itemView) {
@@ -28,6 +29,8 @@ public class SubjectViewHolder extends RecyclerView.ViewHolder implements View.O
         txtCourse=(TextView) itemView.findViewById(R.id.subject_course_item);
         checkBoxSubject=(CheckBox) itemView.findViewById(R.id.subject_checkbox_item);
         rowContainer=(LinearLayout) itemView.findViewById(R.id.row_subj_container);
+        check=(ImageView) itemView.findViewById(R.id.confirmado2);
+
     }
 
 

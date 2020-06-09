@@ -61,6 +61,8 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
     static String emailRecibido="";
     static String passwordRecibido="";
+    static String emailBBDD="";
+    static String passwordBBDD="";
     static String tipoBBDD="";
 
     ViewPager pager;
@@ -240,6 +242,9 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                                 //Se obtienen nombre y apellidos
                                 String nombreBBDD = datosUsuario.getNombre();
                                 String apellidosBBDD = datosUsuario.getApellido();
+
+                                emailBBDD=datosUsuario.getEmail();
+                                passwordBBDD=datosUsuario.getPassword();
                                 tipoBBDD= datosUsuario.getType();
 
 
@@ -311,9 +316,21 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.ajustes:
                 //startActivity(new Intent(this, PerfilActivity.class));
-                startActivity(new Intent(this, CrearUsuariosActivity.class)
-                        .putExtra("modify","true")
-                        .putExtra("tipo", tipoBBDD));
+
+                Intent intent= new Intent(this, CrearUsuariosActivity.class);
+
+                String modificado= "true";
+                Bundle info = new Bundle();
+                info.putString("ID",user.getUid());
+                info.putString("tipo", tipoBBDD);
+                info.putString("email",emailBBDD);
+                info.putString("password",passwordBBDD);
+                info.putString("tipoActual", tipoBBDD);
+                info.putString("modify",modificado);
+
+                intent.putExtras(info);
+                startActivity(intent);
+
                 break;
 
             case R.id.logout:

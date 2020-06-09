@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.proyecto.Activities.ActivityMain;
 import com.example.proyecto.Activities.BorrarUsuarioActivity;
 import com.example.proyecto.Activities.CrearUsuariosActivity;
 import com.example.proyecto.Activities.PerfilActivity;
@@ -141,25 +142,27 @@ public class AlumnosFragment extends Fragment {
         super.onStart();
 
 
-        mAuth = FirebaseAuth.getInstance();
-        user=mAuth.getCurrentUser();
+
 
        // String email= user.getEmail();
 
         final String emailOriginal=emailBBDD;
         final String passwordOriginal=passwordBBDD;
 
-        getUsuarioInfo(user);
+
 
         final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
 
+
         FirebaseRecyclerOptions<Usuarios> opciones = new FirebaseRecyclerOptions.Builder<Usuarios>()
-                .setQuery(usersRef.orderByChild("nombre").startAt(usuarios),Usuarios.class)
+                .setQuery(usersRef.orderByChild("nombre").startAt(usuarios).endAt(usuarios+"\uf8ff"),Usuarios.class)
                 .build();
+
 
         FirebaseRecyclerAdapter<Usuarios, UsersViewHolder> adapter = new FirebaseRecyclerAdapter<Usuarios, UsersViewHolder>(opciones) {
             @Override
-            protected void onBindViewHolder(@NonNull UsersViewHolder holder, final int position, @NonNull final Usuarios model) {
+            protected void onBindViewHolder(@NonNull final UsersViewHolder holder, final int position, @NonNull final Usuarios model) {
+
 
                 //INFLAMOS LOS ELEMENTOS DE LA LISTA
                 holder.txtName.setText(model.getNombre());
@@ -171,8 +174,6 @@ public class AlumnosFragment extends Fragment {
                 }else{
                     Picasso.get().load(model.getFoto()).resize(80,80).into(holder.imgUser);
                 }
-
-
 
 
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -194,24 +195,21 @@ public class AlumnosFragment extends Fragment {
                                     if(i==0){
                                         usuarios="";
 
-                                        if(model.getID().equals(user.getUid())){
-                                            startActivity(new Intent(getContext(), CrearUsuariosActivity.class)
-                                                    .putExtra("modify","true")
-                                                    .putExtra("tipo", tipoBBDD));
-                                        }else{
 
-                                            Intent intent= new Intent(getContext(), CrearUsuariosActivity.class)
-                                                    .putExtra("email",emailBBDD)
-                                                    .putExtra("password",passwordBBDD)
-                                                    .putExtra("modify","true");
-                                            startActivity(intent);
-                                            loginOtherUser(model.getEmail(),model.getPassword());
-                                        }
+                                        Intent intent= new Intent(getContext(), CrearUsuariosActivity.class);
 
+                                        String modificado= "true";
+                                        Bundle info = new Bundle();
+                                        info.putString("ID",model.getID());
+                                        info.putString("tipo", model.getType());
+                                        info.putString("email",emailBBDD);
+                                        info.putString("password",passwordBBDD);
+                                        info.putString("tipoActual", tipoBBDD);
+                                        info.putString("modify",modificado);
 
-                                    /*Intent intent= new Intent(getContext(), CrearUsuariosActivity.class);
-                                    intent.putExtra("IDuser", model.getID());
-                                    startActivity(intent);*/
+                                        intent.putExtras(info);
+                                        startActivity(intent);
+
                                     }
                                     //CON ELIMINAR, SE ACCEDE A LA UBICACIÓN DE LA LISTA DE LA COMPRA,
                                     //Y AHÍ SE ELIMINA EL ARTÍCULO, ACTUALIZANDO EL FRAGMENT ACTUAL PARA
@@ -228,13 +226,48 @@ public class AlumnosFragment extends Fragment {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
+                                                loginOtherUser(model.getEmail(),model.getPassword());
+
+                                                AuthCredential credential = EmailAuthProvider
+                                                        .getCredential(model.getEmail(), model.getPassword());
+                                                user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if(task.isSuccessful()){
+                                                                    usersRef.child(user.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            mAuth.signOut();
+                                                                            Intent intent= new Intent(getContext(), ActivityMain.class);
+                                                                            startActivity(intent);
+
+                                                                        }
+                                                                    });
+
+                                                                }else{
+                                                                    //Toast.makeText(BorrarUsuarioActivity.this,"No se pudo eliminar",Toast.LENGTH_SHORT).show();
+
+                                                                    Intent intent= new Intent(getContext(), ActivityMain.class);
+                                                                    startActivity(intent);
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                });
+
+
+
                                                 //loginOtherUser(model.getEmail(),model.getPassword());
-                                                Intent intent= new Intent(getContext(), BorrarUsuarioActivity.class)
+                                                /*Intent intent= new Intent(getContext(), BorrarUsuarioActivity.class)
                                                         .putExtra("email",emailBBDD)
                                                         .putExtra("password",passwordBBDD)
                                                         .putExtra("email_delete",(model.getEmail()))
                                                         .putExtra("password_delete",(model.getPassword()));
-                                                startActivity(intent);
+                                                        startActivity(intent);*/
 
                                             }
                                         });
@@ -279,6 +312,10 @@ public class AlumnosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        mAuth = FirebaseAuth.getInstance();
+        user=mAuth.getCurrentUser();
+        getUsuarioInfo(user);
 
 
         View view=inflater.inflate(R.layout.fragment_alumnos, container, false);

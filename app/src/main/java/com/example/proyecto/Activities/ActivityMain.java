@@ -140,11 +140,13 @@ public class ActivityMain extends AppCompatActivity {
                                                         int tipo = 0;
                                                         Intent intent = new Intent(getApplication(), ReunionesActivity.class);
                                                         intent.putExtra("tipo", tipo);
+                                                        saveOnPreferences(email, password);
                                                         startActivity(intent);
                                                     } else if ((logged_user.getEmail().equalsIgnoreCase(email)) && (logged_user.getType().equalsIgnoreCase("Profesor"))) {
                                                         int tipo = 1;
                                                         Intent intent = new Intent(getApplication(), UserActivity.class);
                                                         intent.putExtra("tipo", tipo);
+                                                        saveOnPreferences(email, password);
                                                         startActivity(intent);
                                                     }
                                                 }
