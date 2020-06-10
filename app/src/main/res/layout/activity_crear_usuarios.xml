@@ -1,263 +1,287 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:animateLayoutChanges="true"
-tools:context=".Activities.CrearUsuariosActivity">
-
-<RelativeLayout
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_modificar_perfil"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerInParent="true"
-    android:layout_marginLeft="40dp"
-    android:layout_marginRight="40dp">
+    tools:context=".Activities.CrearUsuariosActivity">
 
-    <ImageView
-        android:id="@+id/ImagenLogo_crear"
-        android:layout_width="60dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/icono2" />
+    <include
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        layout="@layout/drawer_toolbar"/>
 
-    <RelativeLayout
-        android:id="@+id/gallery1_crear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ImagenLogo_crear">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:layout_marginTop="?attr/actionBarSize">
 
-        <TextView
-            android:id="@+id/tv_login_crear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Crear usuario"
-            android:textColor="@color/gris"
-            android:textSize="30sp" />
-
-        <LinearLayout
-            android:id="@+id/linelay1_crear"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_login_crear"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            <ImageView
+                android:id="@+id/ImagenLogo_crear"
+                android:layout_width="60dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icono2" />
 
-
-                <TextView
-                    android:id="@+id/lbl_tipousuario"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Tipo de usuario:"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <Spinner
-                    android:id="@+id/tipo_usuario_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Nombre"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/sign_nombre_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"
-                    android:fontFamily="sans-serif-light"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:textColor="@color/gris"
-                    android:textSize="12sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="apellidos"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/sign_apellido_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"
-                    android:fontFamily="sans-serif-light"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:textColor="@color/gris"
-                    android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/lbl_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Mail"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/sign_email_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"
-                    android:fontFamily="sans-serif-light"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:textColor="@color/gris"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/lbl_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Password"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/sign_input_password_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"
-                    android:fontFamily="sans-serif-light"
-                    android:inputType="textPassword"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:textColor="@color/gris"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="edad"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/sign_Edad_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"
-                    android:fontFamily="sans-serif-light"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:textColor="@color/gris"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/lbl_grupo_crear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Grupo"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-
-                <Spinner
-                    android:id="@+id/grupo_alumno_crear"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/et_bg"/>
-
-                <TextView
-                    android:id="@+id/lbl_asignaturas_crear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Asignaturas"
-                    android:textAllCaps="true"
-                    android:textColor="@color/gris"
-                    android:textSize="15sp" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sign_recycler_subjects_crear"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:scrollbars="vertical"/>
-
-            </LinearLayout>
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/sign_profile_image_crear"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:src="@drawable/profile"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"/>
-
-            <TextView
-                android:id="@+id/sign_image_profile_btn_crear"
+            <RelativeLayout
+                android:id="@+id/gallery1_crear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cambiar foto de perfil"
-                android:layout_below="@id/sign_profile_image_crear"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"/>
+                android:layout_below="@id/ImagenLogo_crear">
 
-            <Button
-                android:id="@+id/sign_btn_crear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_tbg"
-                android:fontFamily="sans-serif-medium"
-                android:paddingLeft="50dp"
-                android:paddingRight="50dp"
-                android:text="Register"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_login_crear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Crear usuario"
+                    android:textColor="@color/gris"
+                    android:textSize="30sp" />
 
-    </RelativeLayout>
-</RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/linelay1_crear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_login_crear"
+                    android:orientation="vertical">
 
-</ScrollView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:id="@+id/lbl_tipousuario"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Tipo de usuario:"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <Spinner
+                            android:id="@+id/tipo_usuario_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Nombre"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <EditText
+                            android:id="@+id/sign_nombre_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:textColor="@color/gris"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="apellidos"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <EditText
+                            android:id="@+id/sign_apellido_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:textColor="@color/gris"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:id="@+id/lbl_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Mail"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <EditText
+                            android:id="@+id/sign_email_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:textColor="@color/gris"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/lbl_password"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Password"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <EditText
+                            android:id="@+id/sign_input_password_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"
+                            android:fontFamily="sans-serif-light"
+                            android:inputType="textPassword"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:textColor="@color/gris"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="edad"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <EditText
+                            android:id="@+id/sign_Edad_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:textColor="@color/gris"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/lbl_grupo_crear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Grupo"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+
+                        <Spinner
+                            android:id="@+id/grupo_alumno_crear"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/et_bg"/>
+
+                        <TextView
+                            android:id="@+id/lbl_asignaturas_crear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Asignaturas"
+                            android:textAllCaps="true"
+                            android:textColor="@color/gris"
+                            android:textSize="15sp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/sign_recycler_subjects_crear"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            android:scrollbars="vertical"/>
+
+                    </LinearLayout>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/sign_profile_image_crear"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:src="@drawable/profile"
+                        app:civ_border_color="#FF000000"
+                        app:civ_border_width="2dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="30dp"/>
+
+                    <TextView
+                        android:id="@+id/sign_image_profile_btn_crear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cambiar foto de perfil"
+                        android:layout_below="@id/sign_profile_image_crear"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"/>
+
+                    <Button
+                        android:id="@+id/sign_btn_crear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/listabg2"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingLeft="50dp"
+                        android:paddingRight="50dp"
+                        android:text="Register"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view_modificar_perfil"
+        app:menu="@menu/drawer_menu"
+        app:headerLayout="@layout/drawer_header"
+        android:fitsSystemWindows="true"
+        android:layout_gravity="start"/>
+
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

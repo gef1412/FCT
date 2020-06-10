@@ -59,18 +59,6 @@ public class ActivityMain extends AppCompatActivity {
     };
 
 
-   /* @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser()!=null){
-            startActivity(new Intent(ActivityMain.this, UserActivity.class));
-            finish();
-        }
-    }*/
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,34 +117,20 @@ public class ActivityMain extends AppCompatActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     barraCarga.dismiss();
                                     Toast.makeText(ActivityMain.this,"Bienvenido",Toast.LENGTH_SHORT).show();
-                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
-                                        myRef.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                                    Usuarios logged_user = userSnapshot.getValue(Usuarios.class);
-                                                    assert logged_user != null;
-                                                    if ((logged_user.getEmail().equalsIgnoreCase(email)) && (logged_user.getType().equalsIgnoreCase("Alumno"))) {
-                                                        int tipo = 0;
-                                                        Intent intent = new Intent(getApplication(), ReunionesActivity.class);
-                                                        intent.putExtra("tipo", tipo);
-                                                        saveOnPreferences(email, password);
-                                                        startActivity(intent);
-                                                    } else if ((logged_user.getEmail().equalsIgnoreCase(email)) && (logged_user.getType().equalsIgnoreCase("Profesor"))) {
-                                                        int tipo = 1;
-                                                        Intent intent = new Intent(getApplication(), UserActivity.class);
-                                                        intent.putExtra("tipo", tipo);
-                                                        saveOnPreferences(email, password);
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    //inicioApp(email,password);
 
-                                            }
-                                        });
+                                    //int tipo = 1;
+                                    Intent intent = new Intent(getApplication(), ReunionesActivity.class);
+                                    //intent.putExtra("tipo", tipo);
+                                    if(rememberMe.isChecked()){
+                                        saveOnPreferences(email, password);
+                                    }
+                                    startActivity(intent);
+
+
+
+                                    /**/
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     barraCarga.dismiss();
@@ -181,6 +155,42 @@ public class ActivityMain extends AppCompatActivity {
         });
 
     }
+
+    /*private void inicioApp(final String email, final String password) {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Usuarios logged_user = userSnapshot.getValue(Usuarios.class);
+                    assert logged_user != null;
+                    if ((logged_user.getEmail().equals(email)) && (logged_user.getType().equals("Alumno"))) {
+                        int tipo = 0;
+                        Intent intent = new Intent(getApplication(), ReunionesActivity.class);
+                        intent.putExtra("tipo", tipo);
+                        if(rememberMe.isChecked()){
+                            saveOnPreferences(email, password);
+                        }
+
+                        startActivity(intent);
+                    } else if ((logged_user.getEmail().equalsIgnoreCase(email)) && (logged_user.getType().equalsIgnoreCase("Profesor"))) {
+                        int tipo = 1;
+                        Intent intent = new Intent(getApplication(), UserActivity.class);
+                        intent.putExtra("tipo", tipo);
+                        if(rememberMe.isChecked()){
+                            saveOnPreferences(email, password);
+                        }
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }*/
 
     //método que fija el email y contraseña que se hayan guardado
     private void setCredentialsIfExist() {

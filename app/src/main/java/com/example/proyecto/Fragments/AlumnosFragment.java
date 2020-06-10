@@ -10,24 +10,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.proyecto.Activities.ActivityMain;
-import com.example.proyecto.Activities.BorrarUsuarioActivity;
 import com.example.proyecto.Activities.CrearUsuariosActivity;
-import com.example.proyecto.Activities.PerfilActivity;
 import com.example.proyecto.Models.Usuarios;
 import com.example.proyecto.R;
 import com.example.proyecto.ViewHolders.UsersViewHolder;
@@ -259,16 +254,6 @@ public class AlumnosFragment extends Fragment {
                                                     }
                                                 });
 
-
-
-                                                //loginOtherUser(model.getEmail(),model.getPassword());
-                                                /*Intent intent= new Intent(getContext(), BorrarUsuarioActivity.class)
-                                                        .putExtra("email",emailBBDD)
-                                                        .putExtra("password",passwordBBDD)
-                                                        .putExtra("email_delete",(model.getEmail()))
-                                                        .putExtra("password_delete",(model.getPassword()));
-                                                        startActivity(intent);*/
-
                                             }
                                         });
 
@@ -317,7 +302,6 @@ public class AlumnosFragment extends Fragment {
         user=mAuth.getCurrentUser();
         getUsuarioInfo(user);
 
-
         View view=inflater.inflate(R.layout.fragment_alumnos, container, false);
 
         RecyclerView.LayoutManager layoutManager;
@@ -349,9 +333,6 @@ public class AlumnosFragment extends Fragment {
 
             }
         });
-
-
-
 
         return view;
 
@@ -439,6 +420,5 @@ public class AlumnosFragment extends Fragment {
             }
         });
     }
-
 
 }

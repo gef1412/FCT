@@ -83,14 +83,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         user=mAuth.getCurrentUser();
 
 
-        /*try{
-            user=mAuth.getCurrentUser();
-        }catch(NullPointerException e){
-            emailRecibido= getIntent().getStringExtra("emailLogin");
-            passwordRecibido= getIntent().getStringExtra("passwordLogin");
-            loginOtherUser(emailRecibido,passwordRecibido);
-        }*/
-
 
         toolbar= findViewById(R.id.toolbar);
         toolbar.setTitle("Usuarios");
@@ -220,13 +212,12 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                             Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
                             //Se obtiene la ID del usuario actual
 
-                            String id = user.getUid();
-                            /*try{
-                                id=user.getUid();
-                            }catch (NullPointerException e){
-                                id = getIntent().getStringExtra("uid");
-                            }*/
+                            if(user.getUid()==null){
+                                startActivity(new Intent(UserActivity.this,ActivityMain.class));
+                            }
 
+
+                            String id = user.getUid();
                             //Se obtienen los string que representan las IDs en la BBDD
 
                             String idBBDD = datosUsuario.getID();
@@ -315,7 +306,6 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.ajustes:
-                //startActivity(new Intent(this, PerfilActivity.class));
 
                 Intent intent= new Intent(this, CrearUsuariosActivity.class);
 
@@ -344,24 +334,4 @@ public class UserActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
-    /*private void loginOtherUser(String email, String password){
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) { //Si el usuario y contraseña son correctos, se carga el UserActivity.
-                            // Sign in success, update UI with the signed-in user's information
-
-                            Toast.makeText(UserActivity.this,"Usuario ReLogueado",Toast.LENGTH_SHORT).show();
-                            user=mAuth.getCurrentUser();
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-
-                        }
-                    }
-                });
-    }*/
 }

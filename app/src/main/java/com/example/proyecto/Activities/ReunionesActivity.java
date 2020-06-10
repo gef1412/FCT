@@ -103,21 +103,21 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
         actionBarDrawerToggle.syncState();
         this.invalidateOptionsMenu();
 
-
         userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.logged_user);
         profileImage = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_image);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_subjects_reuniones);
 
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        getUsuarioInfo(user);
 
 
 
 
-        Intent intent = getIntent();
-        final int tipo = intent.getIntExtra("tipo", 1);
-        if (tipo == 0) {
-            hide_item();
 
-        }
+        /*Intent intent = getIntent();
+        final int tipo = intent.getIntExtra("tipo", 1);*/
+
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -130,9 +130,6 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        getUsuarioInfo(user);
 
         DatabaseReference AsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(user.getUid()).child("asignaturas");
         //final DatabaseReference userAsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
@@ -176,20 +173,20 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                 }
 
 
-                if(tipoBBDD.equals("Alumno")){
+                if(tipoBBDD.equals("Alumno")&&!grupoUsuario.equals("Ninguno")){
                     pulsado[0]= findReuniones(model.getNombre(),holder,position);
-                }else{
+                }else if(tipoBBDD.equals("Profesor")){
 
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             startActivity(new Intent(ReunionesActivity.this,ConsultaReunionesActivity.class)
                                     .putExtra("asignatura",model.getNombre()));
-
                         }
                     });
 
+                }else{
+                    Toast.makeText(ReunionesActivity.this, "Debes tener un grupo asignado para solicitar reuniones", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -235,13 +232,11 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                         //encontrado="true";
                         holder.rowContainer.setBackgroundColor(Color.parseColor("#00FF00"));
                         pulsado[0]=false;
-                        if (snapShot.child("estado").exists()){
+                        /*if (snapShot.child("estado").exists()){
                             holder.check.setVisibility(View.VISIBLE);
-                        }
+                        }*/
 
                     }
-
-
 
                 }
 
@@ -440,6 +435,10 @@ public class ReunionesActivity extends AppCompatActivity implements NavigationVi
                         passwordBBDD=datosUsuario.getPassword();
 
                         tipoBBDD = datosUsuario.getType();
+
+                        if (tipoBBDD.equals("Alumno")) {
+                            hide_item();
+                        }
 
                         //Se obtienen nombre y apellidos
                         String nombreBBDD = datosUsuario.getNombre();

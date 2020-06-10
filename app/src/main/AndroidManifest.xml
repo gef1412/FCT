@@ -9,14 +9,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icono2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icono2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme_NoActionBar"
         tools:replace="android:theme">
         <activity android:name=".Activities.ConsultaReunionesActivity"></activity>
-        <activity android:name=".Activities.BorrarUsuarioActivity" />
         <activity android:name=".Activities.CrearUsuariosActivity" />
         <activity android:name=".Activities.CrearGruposActivity" />
         <activity android:name=".Activities.CrearAsignaturaActivity" />

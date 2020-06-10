@@ -91,100 +91,6 @@ public class SignUpActivity extends AppCompatActivity{ //implements AdapterView.
         signUp_btn= (Button) findViewById(R.id.sign_btn);
         barraCarga=new ProgressDialog(this);
 
-
-
-
-        /*recyclerView = findViewById(R.id.sign_recycler_subjects);
-        recyclerView.setHasFixedSize(true);
-        layoutManager=new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);*/
-
-        /*final DatabaseReference AsignaturasRef = FirebaseDatabase.getInstance().getReference().child("Asignaturas");
-
-        FirebaseRecyclerOptions<Asignaturas> opciones = new FirebaseRecyclerOptions.Builder<Asignaturas>()
-                .setQuery(AsignaturasRef,Asignaturas.class)
-                .build();
-
-        final FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder> adapterSubject = new FirebaseRecyclerAdapter<Asignaturas, SubjectViewHolder>(opciones) {
-            @Override
-            protected void onBindViewHolder(@NonNull final SubjectViewHolder holder, final int position, @NonNull final Asignaturas model) {
-
-                //INFLAMOS LOS ELEMENTOS DE LA LISTA
-                holder.txtName.setText(model.getNombre());
-                holder.txtCourse.setText(model.getCurso());
-                holder.checkBoxSubject.setVisibility(View.VISIBLE);
-                holder.imgSubject.setVisibility(View.GONE);
-
-
-                List<CheckBox> items = new ArrayList<CheckBox>();
-
-                items.add(holder.checkBoxSubject);
-
-                for(final CheckBox item : items){
-                    item.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            int pos = holder.getAdapterPosition();
-
-                            if(item.isChecked()){
-                                subjects = model.getNombre();
-                                subjectList.add(subjects);
-                            }else{
-                                subjectList.remove(subjects);
-                            }
-
-                        }
-                    });
-                }
-
-
-
-                *//*holder.checkBoxSubject.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int pos = holder.getAdapterPosition();
-
-                        if(holder.checkBoxSubject.isChecked()){
-                            subjects = model.getNombre();
-                            subjectList.add(subjects);
-                        }else{
-                            subjectList.remove(subjects);
-                        }
-
-                    }
-                });*//*
-
-
-
-                if(model.getFoto()==null){
-                    Picasso.get().load(R.drawable.msn_logo).resize(80,80).into(holder.imgSubject);
-                }else{
-                    Picasso.get().load(model.getFoto()).resize(80,80).into(holder.imgSubject);
-                }
-
-
-            }
-
-            //ESTE MÉTODO INDICA LA VISTA UTILIZADA PARA MOSTRAR EL PRODUCTO EN LA LISTA
-            @NonNull
-            @Override
-            public SubjectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.subjects_item_layout, parent, false);
-                SubjectViewHolder holder= new SubjectViewHolder(view);
-                return holder;
-            }
-        };
-
-        recyclerView.setAdapter(adapterSubject);
-        adapterSubject.startListening();*/
-
-
-
-
-
-
-
-
         mAuth = FirebaseAuth.getInstance();
         storageProfilePictureRef= FirebaseStorage.getInstance().getReference().child("Fotos de perfil");
         gruposRef=FirebaseDatabase.getInstance().getReference();
@@ -193,10 +99,6 @@ public class SignUpActivity extends AppCompatActivity{ //implements AdapterView.
         imageProfile = (CircleImageView) findViewById(R.id.sign_profile_image);
         addImageprofile=(TextView) findViewById(R.id.sign_image_profile_btn);
 
-        /*ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.tipos_usuario,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        userType.setAdapter(adapter);
-        userType.setOnItemSelectedListener(this);*/
 
 
         //Al pulsar el botón se guardan los datos de usuario y se crea la cuenta
@@ -237,50 +139,6 @@ public class SignUpActivity extends AppCompatActivity{ //implements AdapterView.
 
     }
 
-
-    /*private void loadGrupos(){
-        final List<Grupos> grupos=new ArrayList<>();
-        grupos.add(new Grupos(null,null,"Ninguno"));
-
-        gruposRef.child("Grupos").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    for(DataSnapshot ds: dataSnapshot.getChildren()){
-                        String ID=ds.getKey();
-                        String numero= ds.child("numero").getValue().toString();
-                        String nombre= ds.child("nombre").getValue().toString();
-                        grupos.add(new Grupos(ID,numero,nombre));
-                    }
-
-                    ArrayAdapter<Grupos> arrayAdapter=new ArrayAdapter<>(SignUpActivity.this,android.R.layout.simple_dropdown_item_1line,grupos);
-                    studentGroup.setAdapter(arrayAdapter);
-                    studentGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                            //Obtenemos el nombre del grupo seleccionado
-                            grupoEstudiante=parent.getItemAtPosition(position).toString();
-
-                            //CON ESTO OBTENDRÍAMOS EL ID. SERÍA CONVENIENTE EN CASO DE MODIFICAR LOS
-                            //DATOS DEL GRUPO
-                            //grupoEstudiante=grupos.get(position).getID();
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }*/
 
     //En este método nos aseguramos de que los campos estén rellenos
     private void crearCuenta(){
@@ -342,7 +200,6 @@ public class SignUpActivity extends AppCompatActivity{ //implements AdapterView.
 
                                             mAuth.signOut();
                                             Intent intent= new Intent(SignUpActivity.this, ActivityMain.class);
-                                            //subjectList.clear();
                                             startActivity(intent);
                                         } else {
                                             // En caso de fallo, se muestra un mensaje emergente de error
@@ -422,6 +279,8 @@ public class SignUpActivity extends AppCompatActivity{ //implements AdapterView.
         userdataMap.put("email",email);
         userdataMap.put("password",password);
         userdataMap.put("type","Alumno");
+        userdataMap.put("grupo","Ninguno");
+
         //userdataMap.put("asignaturas", subjectList);
 
 

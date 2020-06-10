@@ -1,7 +1,11 @@
 package com.example.proyecto.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +18,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,6 +42,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -60,7 +67,15 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class CrearUsuariosActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener { //implements AdapterView.OnItemSelectedListener
+public class CrearUsuariosActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener { //implements AdapterView.OnItemSelectedListener
+
+    private TextView userName;
+    private CircleImageView profileImage;
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    Toolbar toolbar;
+
+    NavigationView navigationView;
 
     //Creamos los elementos que vamos a necesitar para recoger los datos de registro
     private CircleImageView imageProfile;
@@ -88,9 +103,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
     static String tipoObtenido = "";
     static String tipoUsuarioActual = "";
 
-
-
-
     private String nombreChecked;
     private String cursoChecked;
     private String descripcionChecked;
@@ -112,8 +124,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
     private FirebaseUser user;
 
     //para crear la cuenta de usuario de Firebase
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +162,26 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         barraCarga = new ProgressDialog(this);
 
 
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Crear usuario");
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_modificar_perfil);
+        navigationView = findViewById(R.id.nav_view_modificar_perfil);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //Funcionamiento del icono hamburguesa
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+        this.invalidateOptionsMenu();
+
+        userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.logged_user);
+        profileImage = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_image);
+
+        getUsuarioActual();
+
         if(bundle!=null){
 
             modificar = bundle.getString("modify");
@@ -165,6 +195,8 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
 
             if (modificar.equals("true")) {
                 txtTitulo.setText("Modificar perfil");
+                toolbar.setTitle("Modificar perfil");
+                signUp_btn.setText("Modificar");
                 getUsuarioInfo(IDobtenido);
                 userType.setVisibility(View.GONE);
                 if(IDobtenido.equals(IDactual)){
@@ -186,6 +218,7 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                     recyclerView.setVisibility(View.GONE);
                     txtGrupo.setVisibility(View.GONE);
                     studentGroup.setVisibility(View.GONE);
+                    hide_item();
                 }
 
             }
@@ -198,9 +231,7 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
             txtTipo.setText("Tipo de usuario: "+tipoObtenido);
         }
 
-
         subjectList.clear();
-
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -228,44 +259,7 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                     Picasso.get().load(model.getFoto()).resize(80, 80).into(holder.imgSubject);
                 }
 
-
-
-                /*List<CheckBox> items = new ArrayList<CheckBox>();
-
-                items.add(holder.checkBoxSubject);
-
-                for (final CheckBox item : items) {
-
-                    item.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-
-                            if (item.isChecked()) {
-                                idChecked = model.getID();
-                                nombreChecked= model.getNombre();
-                                cursoChecked= model.getCurso();
-                                descripcionChecked= model.getDescripcion();
-                                if(model.getFoto()!=null){
-                                    fotoChecked= model.getFoto();
-                                }
-                                subjectList.add(idChecked);
-                            } else {
-
-                                subjectList.remove(model.getID());
-
-                            }
-
-                        }
-                    });
-
-
-                }*/
-
                 checkingSubject(holder,model);
-
-
-
 
             }
 
@@ -295,7 +289,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         signUp_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 crearModCuenta();
             }
         });
@@ -310,6 +303,81 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
 
             }
         });
+    }
+
+    private void hide_item() {
+        Menu nav_menu = navigationView.getMenu();
+        nav_menu.findItem(R.id.alumnos).setVisible(false);
+        nav_menu.findItem(R.id.asignaturas).setVisible(false);
+        nav_menu.findItem(R.id.grupos).setVisible(false);
+        nav_menu.findItem(R.id.gestionar).setVisible(false);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        //item.setVisible(false);
+        //pager.setVisibility(View.GONE);
+
+        switch (item.getItemId()) {
+
+            case R.id.alumnos:
+
+                startActivity(new Intent(this, UserActivity.class).putExtra("fragNumber", 0));
+
+                break;
+
+            case R.id.grupos:
+
+                startActivity(new Intent(this, UserActivity.class).putExtra("fragNumber", 1));
+
+                break;
+
+            case R.id.asignaturas:
+
+                startActivity(new Intent(this, UserActivity.class).putExtra("fragNumber", 2));
+
+                break;
+
+            case R.id.reuniones:
+
+                int tipo;
+                if(tipoUsuarioActual.equals("Alumno")){
+                    tipo=0;
+                }else{
+                    tipo=1;
+                }
+
+                startActivity(new Intent(this, ReunionesActivity.class).putExtra("tipo",tipo));
+                break;
+
+            case R.id.ajustes:
+
+
+                Intent intent= new Intent(this, CrearUsuariosActivity.class);
+
+                String modificado= "true";
+                Bundle info = new Bundle();
+                info.putString("ID",user.getUid());
+                info.putString("tipo", tipoUsuarioActual);
+                info.putString("email",emailUserActual);
+                info.putString("password",passwordUserActual);
+                info.putString("tipoActual", tipoUsuarioActual);
+                info.putString("modify",modificado);
+
+                intent.putExtras(info);
+                startActivity(intent);
+                break;
+
+            case R.id.logout:
+                mAuth.signOut();
+                startActivity(new Intent(this, ActivityMain.class));
+                finish();
+                break;
+        }
+
+        return true;
     }
 
     private void checkingSubject(final SubjectViewHolder holder, final Asignaturas model) {
@@ -350,9 +418,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         }
 
 
-
-
-
         List<CheckBox> items = new ArrayList<CheckBox>();
 
                 items.add(holder.checkBoxSubject);
@@ -382,11 +447,7 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                         }
                     });
 
-
                 }
-
-
-
 
     }
 
@@ -411,7 +472,14 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_modificar_perfil);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }else{
+            super.onBackPressed();
+        }
+
         try{
             Toast.makeText(this, "Operación cancelada", Toast.LENGTH_SHORT).show();
         }catch (IllegalArgumentException e){
@@ -429,29 +497,8 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
 
         gruposRef.child("Grupos").addListenerForSingleValueEvent(new ValueEventListener() {
 
-
-
-
-
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                /*DatabaseReference usersRef= FirebaseDatabase.getInstance().getReference().child("Usuarios")
-                        .child(IDobtenido);
-
-                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Usuarios datosUsuario=dataSnapshot.getValue(Usuarios.class);
-                        grupo
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });*/
-
 
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -474,10 +521,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                     studentGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                            //Toast.makeText(CrearUsuariosActivity.this,
-                                   // parent.getItemAtPosition(position).toString(),
-                                   // Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -566,15 +609,13 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                                                 Toast.makeText(CrearUsuariosActivity.this, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
                                                 //Volvemos a la página principal
 
+                                                subjectList.clear();
                                                 mAuth.signOut();
                                                 startActivity(new Intent(CrearUsuariosActivity.this, ActivityMain.class));
-
-                                                //loginActualUser();
-                                                subjectList.clear();
+                                                finish();
 
 
                                             } else {
-                                                // En caso de fallo, se muestra un mensaje emergente de error
 
                                                 barraCarga.dismiss();
                                                 Toast.makeText(CrearUsuariosActivity.this, "Error, email ya existe o no tiene formato adecuado", Toast.LENGTH_SHORT).show();
@@ -596,55 +637,10 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
 
     }
 
-    private void loginActualUser() {
-        mAuth.signInWithEmailAndPassword(emailUserActual, passwordUserActual)
-                .addOnCompleteListener(CrearUsuariosActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()) { //Si el usuario y contraseña son correctos, se carga el UserActivity.
-                            // Sign in success, update UI with the signed-in user's information
-                            barraCarga.dismiss();
-
-                            getUsuarioInfo(mAuth.getUid());
-                            Toast.makeText(CrearUsuariosActivity.this,"Todo bien",Toast.LENGTH_SHORT).show();
-
-                            startActivity(new Intent(CrearUsuariosActivity.this, ActivityMain.class));
-                            mAuth.signOut();
-
-
-                            if(tipoUsuarioActual.equals("Profesor")){
-                                int tipo=1;
-                                Toast.makeText(CrearUsuariosActivity.this,tipoUsuarioActual,Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(CrearUsuariosActivity.this, UserActivity.class).putExtra("tipo",tipo));
-                                finish();
-                            }else{
-                                int tipo=0;
-                                Toast.makeText(CrearUsuariosActivity.this,tipoUsuarioActual,Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(CrearUsuariosActivity.this, ReunionesActivity.class).putExtra("tipo",tipo));
-                                finish();
-                            }
-
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(CrearUsuariosActivity.this, "No se retornó al usuario actual", Toast.LENGTH_SHORT).show();
-                            barraCarga.dismiss();
-                        }
-                    }
-                });
-
-    }
-
-
     private void updateUser(final String email, final String password, final String nombre,
                             final String apellido, final String edad, FirebaseUser user,
                             final Uri imageUri, final FirebaseAuth mAuth,
                             final DatabaseReference rootRef, final ProgressDialog progressDialog) {
-
-
-
-
 
         if(usuarioLogueado){
 
@@ -665,13 +661,8 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                                 actualizaPerfil(nombre, apellido, edad, rootRef);
                                 actualizaImagenPerfil(imageUri, rootRef);
 
-                                if(tipoObtenido.equals("Profesor")){
-                                    int tipo=1;
-                                    startActivity(new Intent(CrearUsuariosActivity.this, UserActivity.class).putExtra("tipo",tipo));
-                                }else{
-                                    int tipo=0;
-                                    startActivity(new Intent(CrearUsuariosActivity.this, ReunionesActivity.class).putExtra("tipo",tipo));
-                                }
+                                startActivity(new Intent(CrearUsuariosActivity.this,  ReunionesActivity.class));
+                                finish();
 
                                 progressDialog.dismiss();
 
@@ -690,24 +681,12 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
             actualizaPerfil(nombre, apellido, edad, rootRef);
             actualizaImagenPerfil(imageUri, rootRef);
 
-            if(tipoObtenido.equals("Profesor")){
-                int tipo=1;
-                startActivity(new Intent(CrearUsuariosActivity.this, UserActivity.class).putExtra("tipo",tipo));
-            }else{
-                int tipo=0;
-                startActivity(new Intent(CrearUsuariosActivity.this, ReunionesActivity.class).putExtra("tipo",tipo));
-            }
-
             progressDialog.dismiss();
+            startActivity(new Intent(CrearUsuariosActivity.this,  ReunionesActivity.class));
+            finish();
 
 
         }
-
-
-
-
-
-
 
     }
 
@@ -716,7 +695,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         final String ID = user.getUid();
         final HashMap<String, Object> userdataMap = new HashMap<>();
 
-        //inputEmail.getText().toString.trim
         user.updateEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -762,7 +740,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
             userdataMap.put("grupo", grupoEstudiante);
         }
 
-
         if (!subjectList.isEmpty()) {
 
             FirebaseDatabase.getInstance().getReference()
@@ -770,11 +747,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                     .child(ID)
                     .child("asignaturas")
                     .removeValue();
-
-            //userdataMap.remove("asignaturas");
-
-            //userdataMap.put("asignaturas", subjectList);
-
 
             for(int i=0;i<subjectList.size();i++){
 
@@ -787,11 +759,9 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                         .child("Usuarios")
                         .child(ID);
 
-
                 DatabaseReference toPath = subjRef.child("asignaturas").child(id);
 
                 copyRecord(fromPath,toPath);
-
 
             }
 
@@ -841,7 +811,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
     }
 
 
-
     private void copyRecord(DatabaseReference fromPath, final DatabaseReference toPath) {
         fromPath.addListenerForSingleValueEvent(new ValueEventListener()  {
             @Override
@@ -860,12 +829,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         });
     }
 
-
-
-
-
-
-
     //Método empleado para guardar datos en Firebase Realtime Databasee
     private void guardaenFirebase(String nombre, String apellido, String edad, String email, String password, DatabaseReference rootRef) {
         final String ID = mAuth.getUid();
@@ -880,7 +843,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         userdataMap.put("email", email);
         userdataMap.put("password", password);
         userdataMap.put("type", tipoUsuario);
-
 
         grupoEstudiante=studentGroup.getSelectedItem().toString();
 
@@ -914,7 +876,6 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                     .child("Usuarios")
                     .child(ID);
 
-
             DatabaseReference toPath = subjRef.child("asignaturas").child(id);
 
             copyRecord(fromPath,toPath);
@@ -926,18 +887,11 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
 
-        //Método para guardar la foto de perfil, se le pasa la referencia Uri de la foto, y el
-        // elemento que servirá para crear la ruta de ubicación de la foto en Storage
-
-        //Este try controla la excepción en caso de que no haya foto seleccionada y el Uri sea null
-        try {
+        try{
             actualizaImagen(imageUri, ID, RootRef);
-        } catch (NullPointerException e) {
+        }catch(NullPointerException e){
             e.printStackTrace();
         }
-
-        //Se cierra la sesión de autenticación, de lo contrario se podría quedar abierta con el usuario
-        //recién creado
 
     }
 
@@ -982,6 +936,63 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
     }
 
 
+
+    private void getUsuarioActual() {
+
+        //Ruta donde buscaremos la información asociada al usuario
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.child("Usuarios").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (final DataSnapshot snapShot : dataSnapshot.getChildren()) {
+                    //Accedemos a la base de datos en la ruta indicada
+                    RootRef.child("Usuarios").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
+
+                            String idBBDD = datosUsuario.getID();
+
+                            if(idBBDD.equals(user.getUid())){
+
+                                String fotoActual = null;
+
+                                if (snapShot.child("foto").exists()) {
+                                    fotoActual = datosUsuario.getFoto();
+                                }
+
+                                if (fotoActual != null) {
+                                    Picasso.get().load(fotoActual).into(profileImage);
+                                }
+
+                                String nombreActual = datosUsuario.getNombre();
+                                String apellidosActual = datosUsuario.getApellido();
+
+                                userName.setText(nombreActual + " " + apellidosActual);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void getUsuarioInfo(final String ID) {
 
         //Ruta donde buscaremos la información asociada al usuario
@@ -996,14 +1007,11 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                     RootRef.child("Usuarios").child(snapShot.getKey()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            //Para extraer los datos de la BBDD con ayuda de la clase Usuarios
+
                             Usuarios datosUsuario = snapShot.getValue(Usuarios.class);
-                            //Se obtiene la ID del usuario actual
-                            //String id = user.getUid();
-                            //Se obtienen los string que representan las IDs en la BBDD
+
                             String idBBDD = datosUsuario.getID();
-                            //Si el ID del usuario actual se corresponde con alguna de las guardadas,
-                            //se obtienen los datos
+
                             if (idBBDD.equals(ID)) {
 
                                 String fotoBBDD = null;
@@ -1018,37 +1026,23 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                                 String emailBBDD = datosUsuario.getEmail();
                                 String passwordBBDD = datosUsuario.getPassword();
 
-
-
-
-                                //subjectBBDD = datosUsuario.getAsignaturas();
-
                                 if (snapShot.child("grupo").exists()) {
                                     grupoBBDD = datosUsuario.getGrupo();
                                 }
 
-
-
-                                //passwordOriginal = datosUsuario.getPassword();
-
-
-                                //Se introducen los datos obtenidos en los elementos de la vista
                                 if (fotoBBDD != null) {
                                     //Picasso.get().load(fotoBBDD).into(profileImage);
                                     Picasso.get().load(fotoBBDD).into(imageProfile);
                                 }
 
-                                //userName.setText(nombreBBDD+" "+apellidosBBDD);
-
-                                //Rellenamos los campos con los datos actuales
                                 inputName.setText(nombreBBDD);
                                 inputLastname.setText(apellidosBBDD);
                                 inputAge.setText(edadBBDD);
                                 inputEmail.setText(emailBBDD);
                                 inputPassword.setText(passwordBBDD);
 
-
                             }
+
                         }
 
                         @Override
