@@ -291,6 +291,18 @@ public class AlumnosFragment extends Fragment {
 
     }
 
+    private void setHideShowFAB(final FloatingActionButton addAlumno_btn, RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    addAlumno_btn.hide();
+                else if (dy < 0)
+                    addAlumno_btn.show();
+            }
+        });
+    }
+
 
 
     @Override
@@ -333,6 +345,8 @@ public class AlumnosFragment extends Fragment {
 
             }
         });
+
+        setHideShowFAB(addAlumno_btn,recyclerView);
 
         return view;
 

@@ -235,6 +235,24 @@ public class GruposFragment extends Fragment {
             }
         });
 
+
+        setHideShowFAB(addGroup_btn,recyclerView);
+
         return view;
     }
+
+    private void setHideShowFAB(final FloatingActionButton addGroup_btn, RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    addGroup_btn.hide();
+                else if (dy < 0)
+                    addGroup_btn.show();
+            }
+        });
+    }
+
+
+
 }

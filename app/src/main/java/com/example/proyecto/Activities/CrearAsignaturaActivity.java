@@ -155,6 +155,8 @@ public class CrearAsignaturaActivity extends AppCompatActivity {
                                 inputSubjectCourse.setText(courseBBDD);
                                 inputSubjectDescription.setText(descriptionBBDD);
 
+                                createSubject.setText("MODIFICAR ASIGNATURA");
+
                             }
                         }
 

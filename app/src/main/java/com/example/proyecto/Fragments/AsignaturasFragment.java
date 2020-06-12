@@ -245,8 +245,24 @@ public class AsignaturasFragment extends Fragment {
             }
         });
 
+
+        setHideShowFAB(addSubject_btn,recyclerView);
+
         return view;
 
+    }
+
+
+    private void setHideShowFAB(final FloatingActionButton addSubject_btn, RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    addSubject_btn.hide();
+                else if (dy < 0)
+                    addSubject_btn.show();
+            }
+        });
     }
 
 

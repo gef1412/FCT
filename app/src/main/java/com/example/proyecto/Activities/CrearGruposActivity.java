@@ -110,6 +110,7 @@ public class CrearGruposActivity extends AppCompatActivity {
 
                                 inputGroupNumber.setText(numberBBDD);
                                 inputGroupName.setText(nameBBDD);
+                                createGroup.setText("MODIFICAR GRUPO");
 
 
                             }
@@ -129,6 +130,8 @@ public class CrearGruposActivity extends AppCompatActivity {
 
             }
         });
+
+
 
 
     }

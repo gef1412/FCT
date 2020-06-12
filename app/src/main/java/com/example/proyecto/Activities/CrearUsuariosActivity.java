@@ -202,6 +202,7 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                 if(IDobtenido.equals(IDactual)){
                     usuarioLogueado=true;
                 }else{
+                    usuarioLogueado=false;
                     inputEmail.setVisibility(View.GONE);
                     inputPassword.setVisibility(View.GONE);
                     lbl_email.setVisibility(View.GONE);
@@ -661,10 +662,12 @@ public class CrearUsuariosActivity extends AppCompatActivity implements AdapterV
                                 actualizaPerfil(nombre, apellido, edad, rootRef);
                                 actualizaImagenPerfil(imageUri, rootRef);
 
-                                startActivity(new Intent(CrearUsuariosActivity.this,  ReunionesActivity.class));
+                                mAuth.signOut();
+                                progressDialog.dismiss();
+                                startActivity(new Intent(CrearUsuariosActivity.this,  ActivityMain.class));
                                 finish();
 
-                                progressDialog.dismiss();
+
 
 
                             } else {

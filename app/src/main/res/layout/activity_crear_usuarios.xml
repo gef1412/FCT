@@ -77,7 +77,7 @@
                         <Spinner
                             android:id="@+id/tipo_usuario_crear"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="35dp"
                             android:layout_marginTop="5dp"
                             android:background="@drawable/et_bg"/>
 
@@ -100,6 +100,7 @@
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
+                            android:singleLine="true"
                             android:textColor="@color/gris"
                             android:textSize="12sp" />
                         <TextView
@@ -121,6 +122,7 @@
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
+                            android:singleLine="true"
                             android:textColor="@color/gris"
                             android:textSize="12sp" />
                         <TextView
@@ -143,6 +145,7 @@
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
+                            android:singleLine="true"
                             android:textColor="@color/gris"
                             android:textSize="12sp" />
 
@@ -167,6 +170,7 @@
                             android:inputType="textPassword"
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
+                            android:singleLine="true"
                             android:textColor="@color/gris"
                             android:textSize="12sp" />
 
@@ -189,6 +193,7 @@
                             android:fontFamily="sans-serif-light"
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
+                            android:singleLine="true"
                             android:textColor="@color/gris"
                             android:textSize="12sp" />
 
@@ -207,7 +212,7 @@
                         <Spinner
                             android:id="@+id/grupo_alumno_crear"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="35dp"
                             android:layout_marginTop="5dp"
                             android:background="@drawable/et_bg"/>
 

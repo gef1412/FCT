@@ -18,24 +18,26 @@
 
     <EditText
         android:id="@+id/add_subject_name"
-        android:layout_below="@id/add_subject_img"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/add_subject_img"
         android:layout_marginLeft="45dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="45dp"
-        android:fontFamily="sans-serif-light"
-        android:textStyle="bold"
-        android:textColor="@color/gris"
         android:background="@drawable/et_bg"
-        android:padding="20dp"
-        android:hint="Nombre"/>
+        android:fontFamily="sans-serif-light"
+        android:hint="Nombre"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:singleLine="true"
+        android:textColor="@color/gris"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/add_subject_course"
         android:layout_below="@id/add_subject_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="45dp"
         android:layout_marginRight="45dp"
@@ -43,14 +45,16 @@
         android:textStyle="bold"
         android:textColor="@color/gris"
         android:background="@drawable/et_bg"
-        android:padding="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:singleLine="true"
         android:hint="Curso"/>
 
     <EditText
         android:id="@+id/add_subject_description"
         android:layout_below="@id/add_subject_course"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="45dp"
         android:layout_marginRight="45dp"
@@ -58,7 +62,9 @@
         android:textStyle="bold"
         android:textColor="@color/gris"
         android:background="@drawable/et_bg"
-        android:padding="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:singleLine="true"
         android:hint="Descripción"/>
 
     <Button
@@ -70,7 +76,7 @@
         android:layout_marginRight="45dp"
         android:layout_marginBottom="20dp"
         android:padding="17dp"
-        android:text="CREAR/MODIFICAR ASIGNATURA"
+        android:text="CREAR ASIGNATURA"
         android:fontFamily="sans-serif-medium"
         android:textSize="16sp"
         android:textAllCaps="false"
